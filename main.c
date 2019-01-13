@@ -1,7 +1,11 @@
 #include "config.h"
 #include <xc.h>
+#include <stdlib.h>
 #include <stdint.h>
 
+/* The target board uses 4 MHz oscillator module */
+// PIC18F4520 Configuration Bit Settings
+#pragma config OSC = XT         // Oscillator Selection bits (XT oscillator)
 #define _XTAL_FREQ 4000000 // Fosc  frequency for _delay()  library 4MHz
 
 // Lookup table for the 7Seg displays.
@@ -17,34 +21,6 @@ void _7Seg(uint8_t seg1, uint8_t seg2)
 	PORTEbits.RE1 = 1; // Off SL1
 	PORTEbits.RE2 = 0; // On SL2
 	_delay(200);
-}
-
-// To move function into external utils lib
-char numberToWord(int num)
-{
-	switch (num)
-	{
-	case 0:
-		return '0';
-	case 1:
-		return '1';
-	case 2:
-		return '2';
-	case 3:
-		return '3';
-	case 4:
-		return '4';
-	case 5:
-		return '5';
-	case 6:
-		return '6';
-	case 7:
-		return '7';
-	case 8:
-		return '8';
-	case 9:
-		return '9';
-	}
 }
 
 // 'Buzzer' Macros
@@ -144,18 +120,30 @@ void interrupt ISR(void)
 
 void interrupt_setup()
 {
-	// Interrupts
+	// Disable all Interrupts
 	GIE = 0;
+	INTCONbits.GIEH = 0;
 
 	INTCON2
 	INTCON3
 
+
+	// Enable all interrupts
 	GIE = 1;
 }
 
+/*
+OSSCON register is used to select the current run mode
+*/
+
 void ADC_setup()
 {
+	// Set ADC input pin/channel
+	// Modify the TRIS registers to match above ADC input selection
 }
+
+void start_timer();
+void stop_timer()
 
 void main(void)
 {
@@ -173,34 +161,26 @@ void main(void)
 	// Set any initial values
 	PORTA =
 
-		return;
+
+
+	/* Put MCU to sleep instead of a infinite while loop */
+	sleep(); // xc8 compiler library function
+	/* Idle mode means, CPU clock sleeps and peripheral continue to work.
+		Sleep mode means, all selected oscillators stop. */
 }
 
-// Old deprecated example code
 
-// _7Seg(0, 0); // Reset the 7 seg displays to nothing
-// LIGHT_OFF;   // Off the bulb first
-// LCD(CLS, LINE1, "Press touch");
-// LCD(NO_CLS, LINE2, "sensor to play!");
 
-// if (game(num1, num2))
-// {
-// 	_7Seg(0, 0); // Reset the 7 seg displays to nothing
-// 	LCD(CLS, LINE1, "You are correct!");
-// 	LCD(NO_CLS, LINE2, "Congratulations!");
-// 	PORTAbits.RA4 = 1; // LED
-// 	speaker(SOUND_CORRECT);
-// 	lightbulb(LIGHT_CORRECT);
-// }
-// else
-// {
-// 	_7Seg(0, 0); // Reset the 7 seg displays to nothing
-// 	LCD(CLS, LINE1, "Incorrect!");
-// 	LCD(NO_CLS, LINE2, "Try again!");
-// 	PORTAbits.RA5 = 1; // LED
-// 	speaker(SOUND_WRONG);
-// 	lightbulb(LIGHT_WRONG);
-// }
+/*
+
+Tech needed to be included:
+- ADC to read a analog input
+- Hardware PWM to simulate analog output
+- Harware timer to create delays or smth
+- Sleep and other power management shit
+
+*/
+
 
 
 // Regarding Timer
