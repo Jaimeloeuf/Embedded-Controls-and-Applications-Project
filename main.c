@@ -1,62 +1,24 @@
-#include "config.h"
+#include "config.h" // Header file contains any configuration bits needed to be set by the debugger
 #include <xc.h>
-#include <stdlib.h>
-#include <stdint.h>
+#include <stdlib.h> // Where is this used??
+#include <stdint.h> // Used to get definition for uint8_t and other standard types. To convert to use primitives ltr.
 
 /* The target board uses 4 MHz oscillator module */
 // PIC18F4520 Configuration Bit Settings
 #pragma config OSC = XT         // Oscillator Selection bits (XT oscillator)
-#define _XTAL_FREQ 4000000 // Fosc  frequency for _delay()  library 4MHz
+// Set 'Fosc' frequency, needed by the delay function call
+#define _XTAL_FREQ 4000000
 
-// Lookup table for the 7Seg displays.
-uint8_t SevenSeg[7] = {0xFF, 0b11111001, 0b10100100, 0b10110000, 0b10011001, 0b10010010, 0b10000010};
-void _7Seg(uint8_t seg1, uint8_t seg2)
-{
-	// Perhaps add a method to off one of the 7seg? E.g. when val read is -1, off the SL
-	PORTC = SevenSeg[seg1];
-	PORTEbits.RE1 = 0; // On SL1
-	PORTEbits.RE2 = 1; // Off SL2
-	_delay(200);
-	PORTC = SevenSeg[seg2];
-	PORTEbits.RE1 = 1; // Off SL1
-	PORTEbits.RE2 = 0; // On SL2
-	_delay(200);
-}
 
-// 'Buzzer' Macros
-#define SPEAKER PORTEbits.RE0
-void speaker(count)
-{
-	// Sound a specific number of times per call. Should this be done in software delats or should this be done with hardware interrupts
-	for()
-	for (int n = 0; n < 500; n++)
-	{
-		SPEAKER = 1;
-		_delay(10);
-		SPEAKER = 0;
-		_delay(500);
-	}
-}
+/*	@Todo
+	Split the ISR up to deal with High and Low priority interrupts seperately
+*/
 
-#define DA PORTAbits.RA1 // Make this into a Interrupt flag
 void interrupt ISR(void)
 {
 	if (DA == HIGH)
 	{
-		// Check the interrupt flag instead of DA. Perhaps in this case, DA is the interrupt flag?
-
-		while (!PORTAbits.RA0) // Make DA into an EXTINT, and keypad value will be read in ISR
-			_7Seg(num1, num2);
-
-		value[count] = keypad_digit[PORTB & 0x0F]; // Read the lower nibble. RB0-RB3
-
-		if (value[count] == keypad_digit['F'])
-		{
-			// Reset the count shit when F is encountered
-		}
-
-		// Clear the interrupt flag
-		DA = 0;
+		// call the Keypad interrupt function here
 	}
 	else if (/* Other interrupt flags... */)
 	{
@@ -80,21 +42,20 @@ void interrupt_setup()
 	GIE = 1;
 }
 
-/*
-OSSCON register is used to select the current run mode
-*/
-
 void ADC_setup()
 {
 	// Set ADC input pin/channel
 	// Modify the TRIS registers to match above ADC input selection
 }
 
+// @Todo implement 2 functions that allow timers to be called and used
 void start_timer();
-void stop_timer()
+void stop_timer();
 
 void main(void)
 {
+	// To use OSSCON register to select the current run mode at startup
+
 	// Set the I/O tri-state buffers
 	// @TODO Need to change the ADCON1 for the ADC usage
 	ADCON1 = 0x0F;		// Set ports A,B & E as digital I/O
@@ -104,7 +65,7 @@ void main(void)
 	TRISD = 0;			// Entire PORTD used for LCD output
 	TRISE = 0;			// RE0 is used for speaker // RE1 and RE2 used as output for SL1 and SL2 // Must be output to use PORTD as GPIO
 
-	// Read config and password from EEPROM
+	// Read config and password from EEPROM --> needed?
 
 	// Set any initial values
 	PORTA =
@@ -116,8 +77,6 @@ void main(void)
 	/* Idle mode means, CPU clock sleeps and peripheral continue to work.
 		Sleep mode means, all selected oscillators stop. */
 }
-
-
 
 /*
 

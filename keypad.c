@@ -1,11 +1,17 @@
-#define DA PORTAbits.RA1 // Make this into a Interrupt flag
+#include <xc.h>
+#include <stdint.h>
+
+#define DA PORTAbits.RA1 // This input pin will be used as an eternal interrupt
+
+// Array that stores all the keypad digits based on the input truth table
+unsigned char keypad_digit[] = {1, 2, 3, 0xF, 4, 5, 6, 0xE, 7, 8, 9, 0xD, 0, 0xB, 0xC};
+
 void interrupt ISR(void)
 {
+	// Check the interrupt flag instead of DA. // Make DA into an EXTINT, and keypad value will be read in ISR
 	if (DA == HIGH)
 	{
-		// Check the interrupt flag instead of DA. Perhaps in this case, DA is the interrupt flag?
-
-		while (!PORTAbits.RA0) // Make DA into an EXTINT, and keypad value will be read in ISR
+		while (!PORTAbits.RA0)
 			_7Seg(num1, num2);
 
 		value[count] = keypad_digit[PORTB & 0x0F]; // Read the lower nibble. RB0-RB3
@@ -26,8 +32,6 @@ void interrupt ISR(void)
 	}
 }
 
-
-unsigned char keypad_digit[] = {1, 2, 3, 0xF, 4, 5, 6, 0xE, 7, 8, 9, 0xD, 0, 0xB, 0xC};
 uint8_t game(uint8_t num1, uint8_t num2) // Main function to execute when a button is pressed. It will send signal for others to do stuff
 {
 	// Listen to keypad until user press F for finnish input.
