@@ -10,8 +10,24 @@
 #define _XTAL_FREQ 4000000
 
 
-/*	@Todo
+/*	@Doc
+	This is the main file, and it should only contain the:
+	- main function
+	- The interrupt service routines
+	- Interrupt setup code
+	- Power management code
+	All other functionalities should be imported in from other libs.
+
+	@Todo
 	Split the ISR up to deal with High and Low priority interrupts seperately
+
+
+	Tech needed to be included:
+	- ADC to read a analog input
+	- Hardware PWM to simulate analog output
+	- Harware timer to create delays or smth
+	- Sleep and other power management shit
+
 */
 
 void interrupt ISR(void)
@@ -42,16 +58,6 @@ void interrupt_setup()
 	GIE = 1;
 }
 
-void ADC_setup()
-{
-	// Set ADC input pin/channel
-	// Modify the TRIS registers to match above ADC input selection
-}
-
-// @Todo implement 2 functions that allow timers to be called and used
-void start_timer();
-void stop_timer();
-
 void main(void)
 {
 	// To use OSSCON register to select the current run mode at startup
@@ -77,22 +83,3 @@ void main(void)
 	/* Idle mode means, CPU clock sleeps and peripheral continue to work.
 		Sleep mode means, all selected oscillators stop. */
 }
-
-/*
-
-Tech needed to be included:
-- ADC to read a analog input
-- Hardware PWM to simulate analog output
-- Harware timer to create delays or smth
-- Sleep and other power management shit
-
-*/
-
-
-
-// Regarding Timer
-/*
-A timer is a clock oscillator feeding a counter - a pre-scaler goes between the clock and counter, a post-scaler goes after the counter. There are specific advantages for either.
-Prescaler: Generation of the desired frequency.
-Postscaler: Management of the occurrence of the interrupt
-*/
