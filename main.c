@@ -38,58 +38,6 @@ void speaker(count)
 	}
 }
 
-#define LIGHT_WRONG 0
-#define LIGHT_CORRECT 1
-#define LIGHT_ON PORTCbits.RC7 = 1
-#define LIGHT_OFF PORTCbits.RC7 = 0
-void lightbulb(uint8_t pattern) // TO CHANGE THE PORTS USED FOR THE LIGHT BULB
-{
-	switch (pattern)
-	{
-	case LIGHT_CORRECT: // Bight intensity. Holds for about 1 second
-		for (int n = 0; n < 10; n++)
-		{
-			LIGHT_ON;
-			_delay(900); // Pulse HIGH
-			LIGHT_OFF;
-			_delay(100); // Pull LOW
-		}
-		break;
-	case LIGHT_WRONG: // Quick Flashing for about 0.2 second
-		for (int n = 0; n < 10; n++)
-		{
-			LIGHT_ON;
-			_delay(100);
-			LIGHT_OFF;
-			_delay(900);
-		}
-		break;
-	}
-	LIGHT_OFF; // Off the bulb at the end
-}
-
-unsigned char keypad_digit[] = {1, 2, 3, 0xF, 4, 5, 6, 0xE, 7, 8, 9, 0xD, 0, 0xB, 0xC};
-uint8_t game(uint8_t num1, uint8_t num2) // Main function to execute when a button is pressed. It will send signal for others to do stuff
-{
-	// Listen to keypad until user press F for finnish input.
-
-	for (unsigned char count = 0; count < 2; count++)
-	{
-		while (!PORTAbits.RA0) // Make DA into an EXTINT, and keypad value will be read in ISR
-			_7Seg(num1, num2);
-		value[count] = keypad_digit[PORTB & 0x0F]; // Read the lower nibble. RB0-RB3
-		if (value[0] == ans)					   // If ans is only 1 digit
-			return 1;
-		while (PORTAbits.RA0 == 1)
-		{
-			_7Seg(num1, num2);
-		}
-	}
-
-	// Return the full value? Or should I call functions from here
-	return ((value[0] * 10) + value[1] == num1 + num2) ? 1 : 0;
-}
-
 #define DA PORTAbits.RA1 // Make this into a Interrupt flag
 void interrupt ISR(void)
 {
