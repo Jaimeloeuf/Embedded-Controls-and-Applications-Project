@@ -3,12 +3,19 @@
 #include <stdlib.h> // Where is this used??
 #include <stdint.h> // Used to get definition for uint8_t and other standard types. To convert to use primitives ltr.
 
+// My own header files for the libs/modules
+#include "keypad.h" // Keypad reader interface
+#include "adc.h"	// ADC control and reader functions
+#include "timer.h"  // Peripheral timer controller
+#include "7seg.h"   // Dual Seven Segment interface lib
+#include "LCD.h"	// LCD interface lib
+#include "utils.h"  // Utilities functions
+
 /* The target board uses 4 MHz oscillator module */
 // PIC18F4520 Configuration Bit Settings
-#pragma config OSC = XT         // Oscillator Selection bits (XT oscillator)
+#pragma config OSC = XT // Oscillator Selection bits (XT oscillator)
 // Set 'Fosc' frequency, needed by the delay function call
 #define _XTAL_FREQ 4000000
-
 
 /*	@Doc
 	This is the main file, and it should only contain the:
@@ -28,13 +35,30 @@
 	- Harware timer to create delays or smth
 	- Sleep and other power management shit
 
+	The ISR in this file will handle the interrupt source checking and clearing of the interrupt flag when done.
+
 */
 
+// Interrupt flags
+#define keyFlag INT0IF
+#define adcFlag INT0IF
+#define timeFlag INT0IF
+
+// The ISR is just a 'Switch' in charge of calling the "ISR" of the different libs/modules
 void interrupt ISR(void)
 {
-	if (DA == HIGH)
+	/*	@Steps
+		1. Check for interrupt source by checking all the interrupt flags.
+		2. Call the "ISR" functions
+			Clear the interrupt flag.
+	*/
+
+	if (keyFlag) // Check if DA went high
 	{
-		// call the Keypad interrupt function here
+		// call the Keypad interrupt function
+		keypad_ISR();
+		// Clear the interrupt flag
+		keyFlag = 0;
 	}
 	else if (/* Other interrupt flags... */)
 	{
@@ -52,7 +76,6 @@ void interrupt_setup()
 
 	INTCON2
 	INTCON3
-
 
 	// Enable all interrupts
 	GIE = 1;
@@ -76,10 +99,8 @@ void main(void)
 	// Set any initial values
 	PORTA =
 
-
-
-	/* Put MCU to sleep instead of a infinite while loop */
-	sleep(); // xc8 compiler library function
-	/* Idle mode means, CPU clock sleeps and peripheral continue to work.
+		/* Put MCU to sleep instead of a infinite while loop */
+		sleep(); // xc8 compiler library function
+				 /* Idle mode means, CPU clock sleeps and peripheral continue to work.
 		Sleep mode means, all selected oscillators stop. */
 }
