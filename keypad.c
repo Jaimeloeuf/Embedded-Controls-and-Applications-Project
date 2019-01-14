@@ -1,5 +1,6 @@
 #include <xc.h>
 #include <stdint.h>
+#include "keypad.h"
 
 #define DA PORTAbits.RA1 // This input pin will be used as an eternal interrupt
 
@@ -7,6 +8,8 @@
 unsigned char keypad_digit[] = {1, 2, 3, 0xF, 4, 5, 6, 0xE, 7, 8, 9, 0xD, 0, 0xB, 0xC};
 // "Global" variable input that holds the value of the input. Optimization: Create once, used many times.
 unsigned char input;
+
+void Keypad_setup(void);
 
 // Function to be called by the ISR when DA interrupts.
 unsigned char keypad_ISR(void)

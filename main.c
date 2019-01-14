@@ -39,11 +39,6 @@
 
 */
 
-// Interrupt flags
-#define keyFlag INT0IF
-#define adcFlag INT0IF
-#define timeFlag INT0IF
-
 // The ISR is just a 'Switch' in charge of calling the "ISR" of the different libs/modules
 void interrupt ISR(void)
 {
@@ -71,6 +66,7 @@ void interrupt ISR(void)
 	{
 		// Timer overflow interrupt set.
 		// The functions and everything else is dealt with in the Timer function.
+		timer_ISR();
 
 		// Clear the interrupt flag
 		timeFlag = 0;
