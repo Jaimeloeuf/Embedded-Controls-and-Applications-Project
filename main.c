@@ -60,11 +60,27 @@ void interrupt ISR(void)
 		// Clear the interrupt flag
 		keyFlag = 0;
 	}
+	else if (adcFlag)
+	{
+		// Call the ADC interrupt function and get the adc value back
+		adc_ISR();
+		// Clear the interrupt flag
+		adcFlag = 0;
+	}
+	else if (timeFlag)
+	{
+		// Timer overflow interrupt set.
+		// The functions and everything else is dealt with in the Timer function.
+
+		// Clear the interrupt flag
+		timeFlag = 0;
+	}
 	else if (/* Other interrupt flags... */)
 	{
 	}
 	else
 	{
+		// If the source cannot be determined, set error flag>
 	}
 }
 
@@ -99,8 +115,7 @@ void main(void)
 	// Set any initial values
 	PORTA =
 
-		/* Put MCU to sleep instead of a infinite while loop */
-		sleep(); // xc8 compiler library function
-				 /* Idle mode means, CPU clock sleeps and peripheral continue to work.
-		Sleep mode means, all selected oscillators stop. */
+	// Put MCU to sleep instead of a infinite while loop
+	sleep(); // xc8 compiler library function
+	// Idle mode means, CPU clock sleeps and peripheral continue to work. Sleep mode means, all selected oscillators stop.
 }

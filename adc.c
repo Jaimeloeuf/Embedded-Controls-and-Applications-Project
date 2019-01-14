@@ -5,7 +5,7 @@
 
 #include <xc.h>
 
-void ADC_setup()
+void ADC_setup(void)
 {
 	// Set ADC input pin/channel
 	// Modify the TRIS registers to match above ADC input selection
@@ -18,15 +18,26 @@ void ADC_setup()
 	TRISA = 0b11111111;  // Port A as inputs
 }
 
-int adc_read_value()
+void adc_read(void)
 {
-	// Function that returns the current analog value read from the ADC
-	// Should this wait for the value to be read finnish or should interrupts be used?
-
+	// Calll function to read value from the ADC.
+	// Should this function take in an arguement to determine the analog channel to read frm?
+	
+	// Start acquisition
 	ADCON0bits.CHS0 = ~ADCON0bits.CHS0; // Toggle selection of AN0 and AN1
-	_delay(8);							// Delay for Acquisition time 8µs (>=5µs)
-	ADCON0bits.GO = 1;					// Start A/D conversion
-	while (ADCON0bits.DONE); 			// ADC completed?
+	// Delay for Acquisition time 8µs (>=5µs)
+	_delay(8);
+
+	// Start A/D conversion
+	ADCON0bits.GO = 1;
+	// Wait for ADC to complete. None Interrupt flag method.
+	while (ADCON0bits.DONE);
+}
+
+int adc_ISR(void)
+{
+	// "ISR" that returns the value read from the (ADCRH + ADCRL)
+
 	if (ADCON0bits.CHS0 == 0)
 		TA = ADRESH * 256 + ADRESL; // keep result in TA
 	else
