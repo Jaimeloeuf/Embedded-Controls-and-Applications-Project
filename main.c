@@ -82,24 +82,8 @@ void interrupt low_priority ISR_low(void)
 {
 	if (TMR0IF == 1)
 	{
-		TMR0L = 100;
-		sevenSeg();
-		subSec++;
-		if (subSec > 199)
-		{
-			subSec = 0;
-			RA2 = ~RA2;
-			RA1 = ~RA1;
-			sec++;
-			//beep();
-			if (sec > 59)
-			{
-				sec = 0;
-				min++;
-				if (min > 59)
-					min = 0;
-			}
-		}
+
+		// Clear the timer interrupt flag.
 		TMR0IF = 0;
 	}
 }
@@ -110,8 +94,8 @@ void interrupt_setup()
 	GIE = 0;
 	INTCONbits.GIEH = 0;
 
-	INTCON2
-	INTCON3
+	// Enable priority levels on interrupts
+    RCONbits.IPEN = 1;
 
 	// Enable all interrupts
 	GIE = 1;
@@ -120,6 +104,11 @@ void interrupt_setup()
 void main(void)
 {
 	// To use OSSCON register to select the current run mode at startup
+
+
+	// Call all the setup functions.
+	interrupt_setup();
+	Keypad_setup();
 
 	// Set the I/O tri-state buffers
 	// @TODO Need to change the ADCON1 for the ADC usage
@@ -141,6 +130,9 @@ void main(void)
 		while (1)
 	{
 		int x;   // Stuff that I want to do before going back to sleep... can be anything. The int x is just a placeholder.
+		
+		// Constantly display the temperature on the 7 Segment displays, after a while the device goes to sleep, use a timer overflow for that?
+
 		SLEEP(); // xc8 compiler library sleep function
 	}
 	// Idle mode means, CPU clock sleeps and peripheral continue to work. Sleep mode means, all selected oscillators stop.
