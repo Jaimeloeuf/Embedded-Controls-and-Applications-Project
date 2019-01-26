@@ -78,6 +78,32 @@ void interrupt ISR(void)
 	}
 }
 
+void interrupt low_priority ISR_low(void)
+{
+	if (TMR0IF == 1)
+	{
+		TMR0L = 100;
+		sevenSeg();
+		subSec++;
+		if (subSec > 199)
+		{
+			subSec = 0;
+			RA2 = ~RA2;
+			RA1 = ~RA1;
+			sec++;
+			//beep();
+			if (sec > 59)
+			{
+				sec = 0;
+				min++;
+				if (min > 59)
+					min = 0;
+			}
+		}
+		TMR0IF = 0;
+	}
+}
+
 void interrupt_setup()
 {
 	// Disable all Interrupts
@@ -109,13 +135,12 @@ void main(void)
 	// Set any initial values
 	PORTA =
 
-
-	/*	Infinite loop so when it wakes and finishes the ISR and continue on the sleep line, it will loop back
+		/*	Infinite loop so when it wakes and finishes the ISR and continue on the sleep line, it will loop back
 		to go sleep again. This is done to prevent the program from ending after waking from sleep, similiar
 		to the concept of a never ending event-loop in JavaScript */
-	while (1)
+		while (1)
 	{
-		int x; // Stuff that I want to do before going back to sleep... can be anything. The int x is just a placeholder.
+		int x;   // Stuff that I want to do before going back to sleep... can be anything. The int x is just a placeholder.
 		SLEEP(); // xc8 compiler library sleep function
 	}
 	// Idle mode means, CPU clock sleeps and peripheral continue to work. Sleep mode means, all selected oscillators stop.
