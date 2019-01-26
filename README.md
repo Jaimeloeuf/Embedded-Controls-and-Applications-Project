@@ -55,3 +55,35 @@
 	- The system can be locked by the user.
 - Longterm memory of the user's settings.
 	- E.g. Every time I set a new interval, the next time I startup the system I want it to be the one I last set.
+
+
+
+### Pin definitions:
+RA0 / AN0
+	ADC
+RA 1 - 4
+	LCD data
+RA5
+	7Seg SL1
+<!-- RB 0
+	DA Interrupt pin -->
+<!-- RB 1
+	On/Off pin with interrupt -->
+RC2
+	Hardware PWM
+<!-- RC 4 - 7
+	Keypad -->
+RD 0 - 7
+	7Seg output pins
+<!-- RE 0 - 1
+	LCD Control pins -->
+RE2
+	7Seg SL2
+
+
+#### PINS LEFT
+<!-- RA 5 -->
+RB 2 - 5
+RC 0 - 1, 3
+<!-- RD 0 - 7 -->
+<!-- RE 2 -->

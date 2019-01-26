@@ -14,14 +14,12 @@ void Keypad_setup(void);
 // Function to be called by the ISR when DA interrupts.
 unsigned char keypad_ISR(void)
 {
-	return keypad_digit[PORTB & 0x0F]; // Read the lower nibble -> RB0-RB3
+	input = keypad_digit[PORTB & 0x0F]; // Read the lower nibble -> RB0-RB3
 
+	/* Do other things needed here */
+	if (input == '')
 
-	// Method below is for when there is more processing needed.
-	// input = keypad_digit[PORTB & 0x0F]; // Read the lower nibble -> RB0-RB3
-	// /* Do other things needed here */
 	// return input; // Return the value keyed on the keypad
-
 }
 
 /*	@Doc

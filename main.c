@@ -28,7 +28,6 @@
 	@Todo
 	Split the ISR up to deal with High and Low priority interrupts seperately
 
-
 	Tech needed to be included:
 	- ADC to read a analog input
 	- Hardware PWM to simulate analog output
@@ -36,7 +35,6 @@
 	- Sleep and other power management shit
 
 	The ISR in this file will handle the interrupt source checking and clearing of the interrupt flag when done.
-
 */
 
 // The ISR is just a 'Switch' in charge of calling the "ISR" of the different libs/modules
