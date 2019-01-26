@@ -9,8 +9,13 @@
 #define LCD_RS PORTEbits.RE1 // RS signal for LCD
 #define LCD_E PORTEbits.RE0  // E signal for LCD
 
+// Global variable to maintain state off the databus connection type. 1 for 8 Bit connection, 0 for 4 Bit connection.
+uint8_t CONN_TYPE;
+
 void LCD(uint8_t cls, uint8_t line, char *msg)
 {
+	// Have a check for the CONNECTION TYPE to determine which functions to use.
+
 	Init_LCD(); // Initialize LCD to 8-bit interface with multiple line
 	if (cls)
 		LCD_sendCW(0b00000001); // Clear the display
@@ -31,10 +36,15 @@ uint8_t Init_LCD(uint8_t data_bus_width)
 	// User can choose to either use the 8Bit or the 4Bit databus version to connect to the LCD
 	switch (data_bus_width)
 	{
-		case 4: Init4bit(); break;
-		case 8: Init8bit(); break;
-		// Onlt 4 or 8 are valid inputs. If anything else, will return a 0 for false/failed.
-		default: return 0;
+	case 4:
+		Init4bit();
+		break;
+	case 8:
+		Init8bit();
+		break;
+	// Onlt 4 or 8 are valid inputs. If anything else, will return a 0 for false/failed.
+	default:
+		return 0;
 	}
 	// Return 1 for true/operation-success
 	return 1;
@@ -78,13 +88,23 @@ void LCD_sendData(char x)
 void W_ctr_4bit(char);  // 4-bit Control word for LCD
 void W_data_4bit(char); // 4-bit Text Data for LCD
 
+
+
+
 const char MESS[] = "ECAPP LAB 3";
-void main(void)
+void example_code(void)
 {
 	// Initialise LCD to use 4-bit databus interface, with multi-line display
 	Init_LCD(4);
 	for (i = 0; MESS[i]; i++) // Output message to LCD
 		W_data_4bit(MESS[i]); // Write individual character to LCD
+
+
+	// Below is example code on using the LCD
+	W_ctr_4bit(0xc0);		  // Set cursor to line 2
+	itoa(buff, 12, 10);		  // function itoa is used to convert integer stored at result to ASCII and keep to MESS
+	for (i = 0; buff[i]; i++) // Write data to LCD up to null
+		W_data_4bit(buff[i]); // Write character to LCD
 }
 
 void W_ctr_4bit(char x)
