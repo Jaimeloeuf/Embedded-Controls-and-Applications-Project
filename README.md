@@ -1,7 +1,8 @@
 # ECAPP-Project
 
 ## Use case scenarios
-- This is an IoT Project for a sprinkler control system and the Sprinkler will be emulated a motor. The 'strength' or speed of the sprinkler that corresponds to the amount of water sprinkled out will be directly correlated with the speed of the motor.
+- This is an IoT Project for a sprinkler control system and the Sprinkler will be emulated a motor. The 'strength' or speed of
+the sprinkler that corresponds to the amount of water sprinkled out will be directly correlated with the speed of the motor.
 - To use this system, the user can set a mode for the system, either manual or auto mode. The functionalites of the mode is described below.
 - Upon system startup and inactivity or lock, a password is needed to use the system again.
 
@@ -23,8 +24,38 @@
 	At any point in time, the user can set a new interval length. After setting the countdown will restart with the new interval.
 	At any point in time, the user can set a new temperature threshold, this value will only be
 
+#### How does the user uses it?
+- To wake the device from sleep mode:
+	- Touch the touch sensor pad to wake the system up.
+	* Note that the system will go back to sleep after 10 seconds of inactivity.
+	* To tell if the device is sleeping, look at the 7Seg, if it is displaying the current temp, then it is awake, and asleep otherwise.
 
-#### How tos:
+- To directly on or off the sprinkler:
+	- Touch the touch sensor pad to toggle the motor mode/state.
+	* Note that this will only work when the device is awake, meaning after the device wakes up.
+
+To implement a menu system.
+
+- To set the temperature threshold for use in automatic mode.
+	- Go to the 3rd option in the menu.
+	- Enter a temperature in degree celcius. Press the 'D' for decimal point, how do I clear the input??
+	- Press the 'F' key to indicate that you have finnished the input.
+	- The new temperature threshold will display, and you be asked to confirm the option.
+		- If confirmed, program will go back to the menu screen.
+		- If not confirmed, program will loop back to let you enter the temp again.
+
+- To change modes:
+	Press the '' key on the keypad to switch mode.
+
+- To set sprinkler strength.
+	- Press the '' key on the keypad to go into the speed/strength setting menu.
+	- Enter a number up to 100 on the keypad denoting strength in percentage
+	- Press the 'F' key to indicate that you have finnished the input.
+
+	The keypad will only be used to do stuff in the menu.
+
+
+#### Technical components for the emulated stuff.
 - Sprinkler strength/speed
 	- controlled by the hardware PWM.
 - Temperature value
