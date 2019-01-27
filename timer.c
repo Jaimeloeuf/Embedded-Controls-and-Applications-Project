@@ -12,11 +12,17 @@ Postscaler: Management of the occurrence of the interrupt
 void timer_setup(void)
 {
 	// Add in all the values and stuff.
+
+	TMR0H = 0x3C;
+	TMR0L = 0xB0; // TRM0H:L = 0x3CB0
+	T0CON = 0b10000010;
+	INTCON = 0b11100000; //GIEH=1, GIEL=1, TMR0IE = 1, TMR0IF=0
 }
 
-// Function to actually 
+// Function to actually
 void timer_init(int f(int a, int b), uint16_t time, ...)
 {
+	// Step one is to make the 'time' input usable
 	
 }
 
@@ -32,3 +38,13 @@ void timer_action()
 
 	// Basically fucking set timeout all over again.
 */
+
+void interrupt ISR(void)
+{
+	if (INTCONbits.TMR0IF)
+	{
+		TMR0H = 0x3C;
+		TMR0L = 0xB0; // TMR0H:L=0x3CB0 = 15536
+		INTCONbits.TMR0IF = 0;
+	}
+}

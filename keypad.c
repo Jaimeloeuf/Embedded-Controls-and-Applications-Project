@@ -42,6 +42,7 @@ void Keypad_setup(void)
 }
 
 // Function to be called by the ISR when DA interrupts.
+// Something like a menu function that deals with the users selection in the menu.
 unsigned char keypad_ISR(void)
 {
 	input = keypad_digit[PORTC & keypad_BitMask];
@@ -49,27 +50,27 @@ unsigned char keypad_ISR(void)
 	/* Do other things needed here */
 	switch (input)
 	{
-		case 'A':
-			
-			break;
-		case 'B':
-			
-			break;
-		case 'C':
-			
-			break;
-		case 'D':
-			
-			break;
-		case 'E':
-			
-			break;
-		case 'F':
-			
-			break;
-	
-		default:
-			break;
+	case 'A':
+
+		break;
+	case 'B':
+
+		break;
+	case 'C':
+
+		break;
+	case 'D':
+
+		break;
+	case 'E':
+
+		break;
+	case 'F':
+
+		break;
+
+	default:
+		break;
 	}
 
 	// return input; // Return the value keyed on the keypad

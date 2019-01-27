@@ -25,6 +25,19 @@ the sprinkler that corresponds to the amount of water sprinkled out will be dire
 	At any point in time, the user can set a new temperature threshold, this value will only be
 
 #### How does the user uses it?
+
+*** Menu
+1.	View current temperature (More precise than the nearest integer version displayed on the 7Seg)
+2.	Toggle operating mode
+3.	View current temperature threshold used in the automatic mode.
+4.	Set a new temperature threshold, used in the automatic mode.
+5.	Set sprinkler strength when on (If sprinkler is on when the speed is set, the new speed will take effect immediately)
+
+To navigate the menu, press s3 to go back, press s2 to go next menu item
+Before going to sleep, set the LCD to display,
+	Last recorded temperature: .. 30C
+then off the 7seg and go to sleep.
+
 - To wake the device from sleep mode:
 	- Touch the touch sensor pad to wake the system up.
 	* Note that the system will go back to sleep after 10 seconds of inactivity.
@@ -34,8 +47,6 @@ the sprinkler that corresponds to the amount of water sprinkled out will be dire
 	- Touch the touch sensor pad to toggle the motor mode/state.
 	* Note that this will only work when the device is awake, meaning after the device wakes up.
 
-To implement a menu system.
-
 - To set the temperature threshold for use in automatic mode.
 	- Go to the 3rd option in the menu.
 	- Enter a temperature in degree celcius. Press the 'D' for decimal point, how do I clear the input??
@@ -43,9 +54,6 @@ To implement a menu system.
 	- The new temperature threshold will display, and you be asked to confirm the option.
 		- If confirmed, program will go back to the menu screen.
 		- If not confirmed, program will loop back to let you enter the temp again.
-
-- To change modes:
-	Press the '' key on the keypad to switch mode.
 
 - To set sprinkler strength.
 	- Press the '' key on the keypad to go into the speed/strength setting menu.
@@ -72,7 +80,7 @@ To implement a menu system.
 		- E.g. A function calling the ADC to read temperature value every 5 minutes.
 - System status updates for the user
 	- LCD will be used to constantly display the current state of the system.
-	- 7Seg will be used to called constantly display the current temperature.
+	- 7Seg will be used to called constantly display the current temperature, Rounded to the nearest integer
 	- LEDs can be used to show user current status and more.
 - Obtaining user's input
 	- Use keypad if the user wants to control certain stuff.
@@ -92,24 +100,32 @@ To implement a menu system.
 ### Pin definitions:
 RA0 / AN0
 	ADC
-RA 1 - 4
-	LCD data
-RA5
-	7Seg SL1
+<!-- RA 1 - 4
+	LCD data -->
+<!-- RA5
+	7Seg SL1 -->
 <!-- RB 0
 	DA Interrupt pin -->
 <!-- RB 1
 	On/Off pin with interrupt -->
-RC2
-	Hardware PWM
+
+RB 2 - 5
+	The four push button used to move around in the menu
+
+<!-- RC2
+	Hardware PWM -->
+
+RC
+	The remaining RC/PORTC pins can be used to connect the LEDs to show the current mode and stuff.
+
 <!-- RC 4 - 7
 	Keypad -->
-RD 0 - 7
-	7Seg output pins
+<!-- RD 0 - 7
+	7Seg output pins -->
 <!-- RE 0 - 1
 	LCD Control pins -->
-RE2
-	7Seg SL2
+<!-- RE2
+	7Seg SL2 -->
 
 
 #### PINS LEFT
