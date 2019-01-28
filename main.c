@@ -1,3 +1,6 @@
+/* The target board uses 4 MHz oscillator module */
+// PIC18F4520 Configuration Bit Settings
+// Set 'Fosc' frequency, needed by the delay function call
 #define _XTAL_FREQ 4000000
 #pragma config OSC = XT  // Oscillator Selection bits (XT oscillator)
 #pragma config LVP = OFF // Single-Supply ICSP Enable bit
@@ -15,12 +18,6 @@
 #include "7seg.h"   // Dual Seven Segment interface lib
 #include "LCD.h"	// LCD interface lib
 #include "utils.h"  // Utilities functions
-
-/* The target board uses 4 MHz oscillator module */
-// PIC18F4520 Configuration Bit Settings
-#pragma config OSC = XT // Oscillator Selection bits (XT oscillator)
-// Set 'Fosc' frequency, needed by the delay function call
-#define _XTAL_FREQ 4000000
 
 /*	@Doc
 	This is the main file, and it should only contain the:
@@ -100,7 +97,7 @@ void interrupt_setup()
 	INTCONbits.GIEH = 0;
 
 	// Enable priority levels on interrupts
-    RCONbits.IPEN = 1;
+	RCONbits.IPEN = 1;
 
 	// Enable all interrupts
 	GIE = 1;
@@ -109,7 +106,6 @@ void interrupt_setup()
 void main(void)
 {
 	// To use OSSCON register to select the current run mode at startup
-
 
 	// Call all the setup functions.
 	interrupt_setup();
@@ -128,15 +124,14 @@ void main(void)
 	// Read config and password from EEPROM --> needed?
 
 	// Set any initial values
-	PORTA =
 
-		/*	Infinite loop so when it wakes and finishes the ISR and continue on the sleep line, it will loop back
+	/*	Infinite loop so when it wakes and finishes the ISR and continue on the sleep line, it will loop back
 		to go sleep again. This is done to prevent the program from ending after waking from sleep, similiar
 		to the concept of a never ending event-loop in JavaScript */
-		while (1)
+	while (1)
 	{
-		int x;   // Stuff that I want to do before going back to sleep... can be anything. The int x is just a placeholder.
-		
+		int x; // Stuff that I want to do before going back to sleep... can be anything. The int x is just a placeholder.
+
 		// Constantly display the temperature on the 7 Segment displays, after a while the device goes to sleep, use a timer overflow for that?
 
 		SLEEP(); // xc8 compiler library sleep function

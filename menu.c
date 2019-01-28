@@ -80,6 +80,7 @@ unsigned char menu_disp(uint8_t menu_item, uint8_t sub_menu_item)
 		case 0:
 			LCD(CLS, LINE1, menu0[0]);
 			LCD(NO_CLS, LINE2, menu0[1]);
+
 			break;
 		
 		case 10:
@@ -127,7 +128,9 @@ unsigned char menu_disp(uint8_t menu_item, uint8_t sub_menu_item)
 			LCD(NO_CLS, LINE2, menu51[1]);
 			break;
 	
-		default:
-			break;
+		// All cases will return 1 to indicate menu exists and successsully switched by menu ID increment
+
+		// Return 0 to indicate menu item does not exist
+		default: return 0;
 	}
 }

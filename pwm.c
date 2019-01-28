@@ -13,11 +13,12 @@
 int power_output;
 
 // Use this function to set output power.
-void set_output_power(int output_percentage)
+void set_output_power(char output_percentage)
 {
 	/* Input parameter:
-		output_percentage: A decimal up to 100 that
-	*/
+		output_percentage is a decimal up to 100 */
+	
+	// Error condition checks
 	if (output_percentage > 100)
 		output_percentage = 100;
 	else if (output_percentage < 0)

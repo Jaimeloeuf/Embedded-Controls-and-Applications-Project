@@ -30,6 +30,14 @@ void LCD(uint8_t cls, uint8_t line, char *msg)
 
 void Init_LCD()
 { /* LCD display initialization */
+
+	/* PORT direction registers. */
+	// Use the AND bitwise operator to set bits to 0
+	// Upper nibble of PORTD is for the 4 Bit data bus. All other pins are left untouched by the bitmask
+	TRISD &= 0x0F;
+	// RE0 and RE1 is used for the RS and E pin of the LCD. All other pins are left untouched by the bitmask
+	TRISE &= 0x0C;
+
 	// Special Sequence a) to d) required for 4-bit interface
 	_delay(15);				// a) 15ms LCD power-up delay
 	W_ctr_4bit(0x03);		// b) Function Set (DB4-DB7: 8-bit interface)

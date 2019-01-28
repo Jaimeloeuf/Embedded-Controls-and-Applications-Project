@@ -66,6 +66,7 @@ then off the 7seg and go to sleep.
 #### Technical components for the emulated stuff.
 - Sprinkler strength/speed
 	- controlled by the hardware PWM.
+	- Timer 2 will be used for the timing/interrupting operation.
 - Temperature value
 	- Read using the ADC on the Pic Chip from the temperature sensor breakout board
 	- Sensor breakout board consist of a LM35 temperature sensor and a simple 10X amplifier.
@@ -135,14 +136,12 @@ RC 0 - 1, 3
 RD 0 - 7
 RE 2
 
+
+<!-- To use the LCD look at below example -->
 void main(void)
 {
 	ADCON1 = 0X0F;
-	TRISA = 0b11000000;
-	TRISB = 0b11110111;
-	TRISC = 0b11111100;
-	TRISD = 0x0f;
-	TRISE = 0x0c;
+	
 
 	const char MESS[] = "ECAPP LAB 3";
 
@@ -157,3 +156,11 @@ void main(void)
 	while (1)
 		;
 }
+
+
+
+BITWISE OPERATIONS Cheatsheet
+Use the AND bitwise operator to set bits to 0 with a 0 as the mask
+Use the OR bitwise operator to set bits to 1 with a 1 as the mask
+Use the EXOR bitwise operator to toggle the bits with a 1 as the mask
+Use the NEGATE bitwise operator to toggle bits without any bitmask
