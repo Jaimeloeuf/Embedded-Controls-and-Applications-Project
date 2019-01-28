@@ -47,9 +47,13 @@ void motor_setup(int output_percentage)
 
 motor_start()
 {
+	// Set all the values for the PWM that was set by the set_out_put function
+
+	// Start the PWM process and wait for the stop function to be called.
 }
 motor_stop()
 {
+	// Stop the motor from running.
 }
 motor_restart()
 {

@@ -68,19 +68,26 @@ Press E to exit
 Press D to show a decimal point if allowed (Flash invalid for a second.)
 */
 
+// Global variable to keep track of the current menu and to maintain state between interrupts.
+uint8_t Current_Menu = 0;
+
+void func(char *menu) {
+	LCD(CLS, LINE1, menu[0]);
+	LCD(NO_CLS, LINE2, menu[1]);
+}
 
 // Use the below function to choose what the menu to display on the LCD.
-unsigned char menu_disp(uint8_t menu_item, uint8_t sub_menu_item)
+uint8_t menu_disp(uint8_t menu_item, uint8_t sub_menu_item)
 {
 	// get the menu ID by combining the input arguements
-	menuID = (menu_item * 10) + sub_menu_item;
+	Current_Menu = (menu_item * 10) + sub_menu_item;
 
-	switch (menuID)
+	switch (Current_Menu)
 	{
 		case 0:
-			LCD(CLS, LINE1, menu0[0]);
-			LCD(NO_CLS, LINE2, menu0[1]);
-
+			// LCD(CLS, LINE1, menu0[0]);
+			// LCD(NO_CLS, LINE2, menu0[1]);
+			func(menu0);
 			break;
 		
 		case 10:
@@ -131,6 +138,9 @@ unsigned char menu_disp(uint8_t menu_item, uint8_t sub_menu_item)
 		// All cases will return 1 to indicate menu exists and successsully switched by menu ID increment
 
 		// Return 0 to indicate menu item does not exist
-		default: return 0;
+		default:
+			// Reset the menuID stored within the Current_menu variable
+			Current_Menu = 0;
+			return 0;
 	}
 }

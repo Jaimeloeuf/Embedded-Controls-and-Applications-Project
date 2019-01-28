@@ -158,9 +158,28 @@ void main(void)
 }
 
 
+    ADCON0 = 0b00000001;
+    ADCON1 = 0b00001110;
+    ADCON2 = 0b00010001;
 
-BITWISE OPERATIONS Cheatsheet
-Use the AND bitwise operator to set bits to 0 with a 0 as the mask
-Use the OR bitwise operator to set bits to 1 with a 1 as the mask
-Use the EXOR bitwise operator to toggle the bits with a 1 as the mask
-Use the NEGATE bitwise operator to toggle bits without any bitmask
+        ADCON0bits.GO = 1;
+        while (ADCON0bits.DONE);
+        result = ADRESH >> 6;
+        PORTA = result;
+
+            T2CON = 0b00000111;
+            PR2 = 78;
+            CCPR1L = 0b00100011;
+            CCP1CON = 0b00001100;
+
+            TMR2ON = 0;
+
+
+#### BITWISE OPERATIONS Cheatsheet
+- Use the AND bitwise operator to set bits to 0 with a 0 as the mask
+- Use the OR bitwise operator to set bits to 1 with a 1 as the mask
+- Use the EXOR bitwise operator to toggle the bits with a 1 as the mask
+- Use the NEGATE bitwise operator to toggle bits without any bitmask
+
+So there will be a global variable to keep track of the current menu in the file so when an interrupt happens,
+the state is still remembered and continues from there.
