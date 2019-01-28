@@ -1,3 +1,8 @@
+#define _XTAL_FREQ 4000000
+#pragma config OSC = XT  // Oscillator Selection bits (XT oscillator)
+#pragma config LVP = OFF // Single-Supply ICSP Enable bit
+#pragma config WDT = OFF // Watchdog Timer Enable bit
+
 #include "config.h" // Header file contains any configuration bits needed to be set by the debugger
 #include <xc.h>
 #include <stdlib.h> // Where is this used??
@@ -108,6 +113,7 @@ void main(void)
 
 	// Call all the setup functions.
 	interrupt_setup();
+	Init_LCD();
 	Keypad_setup();
 
 	// Set the I/O tri-state buffers

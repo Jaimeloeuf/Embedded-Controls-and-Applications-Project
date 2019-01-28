@@ -100,37 +100,60 @@ then off the 7seg and go to sleep.
 ### Pin definitions:
 RA0 / AN0
 	ADC
-<!-- RA 1 - 4
-	LCD data -->
-<!-- RA5
-	7Seg SL1 -->
-<!-- RB 0
-	DA Interrupt pin -->
-<!-- RB 1
-	On/Off pin with interrupt -->
+RA 1 - 4
+	LCD data
+RA5
+	7Seg SL1
+RB 0
+	DA Interrupt pin
+RB 1
+	On/Off pin with interrupt
 
 RB 2 - 5
 	The four push button used to move around in the menu
 
-<!-- RC2
-	Hardware PWM -->
+RC2
+	Hardware PWM
 
 RC
 	The remaining RC/PORTC pins can be used to connect the LEDs to show the current mode and stuff.
 
-<!-- RC 4 - 7
-	Keypad -->
-<!-- RD 0 - 7
-	7Seg output pins -->
-<!-- RE 0 - 1
-	LCD Control pins -->
-<!-- RE2
-	7Seg SL2 -->
+RC 4 - 7
+	Keypad
+RD 0 - 7
+	7Seg output pins
+RE 0 - 1
+	LCD Control pins
+RE2
+	7Seg SL2
 
 
 #### PINS LEFT
-<!-- RA 5 -->
+RA 5
 RB 2 - 5
 RC 0 - 1, 3
-<!-- RD 0 - 7 -->
-<!-- RE 2 -->
+RD 0 - 7
+RE 2
+
+void main(void)
+{
+	ADCON1 = 0X0F;
+	TRISA = 0b11000000;
+	TRISB = 0b11110111;
+	TRISC = 0b11111100;
+	TRISD = 0x0f;
+	TRISE = 0x0c;
+
+	const char MESS[] = "ECAPP LAB 3";
+
+	Init_LCD();					  // Init LCD 4-bit interface, multiple line
+
+    char msg1[] = "Chicken";
+    char msg2[] = "No Chicken";
+    
+	LCD(CLS, LINE1, msg1);
+	LCD(NO_CLS, LINE2, msg2);
+
+	while (1)
+		;
+}

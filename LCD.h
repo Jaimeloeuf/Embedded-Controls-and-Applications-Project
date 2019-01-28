@@ -7,8 +7,9 @@
 #define CLS 1
 #define NO_CLS 0
 
-void Init_LCD();
-void LCD_sendCW(char x);
-void LCD_sendData(char x);
+void LCD(uint8_t cls, uint8_t line, char *msg);
+void Init_LCD(void);	// Initialize the LCD
+void W_ctr_4bit(char);  // 4-bit Control word for LCD
+void W_data_4bit(char); // 4-bit Text Data for LCD
 
 #endif
