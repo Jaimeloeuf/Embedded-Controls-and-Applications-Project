@@ -22,7 +22,7 @@ void adc_read(void)
 {
 	// Calll function to read value from the ADC.
 	// Should this function take in an arguement to determine the analog channel to read frm?
-	
+
 	// Start acquisition
 	ADCON0bits.CHS0 = ~ADCON0bits.CHS0; // Toggle selection of AN0 and AN1
 	// Delay for Acquisition time 8µs (>=5µs)
@@ -31,7 +31,8 @@ void adc_read(void)
 	// Start A/D conversion
 	ADCON0bits.GO = 1;
 	// Wait for ADC to complete. None Interrupt flag method.
-	while (ADCON0bits.DONE);
+	while (ADCON0bits.DONE)
+		;
 }
 
 int adc_ISR(void)
@@ -42,4 +43,23 @@ int adc_ISR(void)
 		TA = ADRESH * 256 + ADRESL; // keep result in TA
 	else
 		TB = ADRESH * 256 + ADRESL;
+}
+
+// Test function for ADC
+void test()
+{
+	TRISA = 0b11110001;  // Pin AN0/RA0 as input
+	ADCON0 = 0b00000001; // Select channel 0 and turn on ADC
+	ADCON1 = 0b00001110; // only AN0 channel and internal voltage referencing
+	ADCON2 = 0b00000100; // Result left justified, manual acquisition time, Fosc/4
+	while (1)
+	{
+		__delay_ms(6);	 // Acquisition time 10us (>=5us)
+		ADCON0bits.GO = 1; // Start ADC
+		while (ADCON0bits.DONE)
+			;					// ADC completed?
+		int result = ADRESH & 0xe0; // Mask the lower 5 bits of the ADC result
+		result >>= 4;			// Shift the upper 3 bits to bits 1~3.
+		PORTA = result;			// Output the result to LEDs at RA1 - RA3
+	}
 }
