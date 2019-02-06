@@ -23,7 +23,6 @@ void timer_setup(void)
 void timer_init(int f(int a, int b), uint16_t time, ...)
 {
 	// Step one is to make the 'time' input usable
-	
 }
 
 void timer_action()
@@ -47,4 +46,43 @@ void interrupt ISR(void)
 		TMR0L = 0xB0; // TMR0H:L=0x3CB0 = 15536
 		INTCONbits.TMR0IF = 0;
 	}
+}
+
+
+
+
+
+// Test functions for the Timer.
+void interrupt tmr0(void)
+{
+	if (TMR0IF)
+	{				  // Check for Timer0 overflow
+		RA1 = ~LATA1; // Toggle LED on RA1
+		RA2 = ~LATA2; // Toggle LED on RA2
+		TMR0IF = 0;   // Clear Timer0 interrupt flag
+	}
+}
+void test(void)
+{
+	char a, i;
+	GIE = 0;
+	ADCON1 = 0X0F;
+	PORTA = 2;
+	PORTC = 0xff;
+	TRISA = 0b11000000;
+	TRISB = 0b11110111;
+	TRISC = 0b00000000;
+	TRISD = 0x0f;
+	TRISE = 0x0c;
+	RCONbits.IPEN = 1;		// Enable priority interrupt
+	INTCON2bits.TMR0IP = 0; // Set Timer0 interrupt to low priority
+	TMR0H = 0;				// Clear Timer0 high byte register
+	TMR0L = 0;				// Clear Timer0 low byte register
+	T0CON = 0b10000010;		// On Timer0, set to 16-bit mode,
+	// Use internal instruction clock,
+	// Rising-edge trigger, set prescaler to 1:8
+	INTCON2 = 0b00000100;
+	INTCON = 0b11100000;
+	while (1)
+		;
 }
