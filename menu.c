@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <xc.h>
 #include "LCD.h"
+#include "menu.h"
 
 // An array of pointers to constant char strings.
 char *menu0[] = {
@@ -79,15 +80,15 @@ void func(char *menu) {
 // Use the below function to choose what the menu to display on the LCD.
 uint8_t menu_disp(uint8_t menu_item, uint8_t sub_menu_item)
 {
-	// get the menu ID by combining the input arguements
+	// get the menu ID by combining the input arguments
 	Current_Menu = (menu_item * 10) + sub_menu_item;
 
 	switch (Current_Menu)
 	{
 		case 0:
-			// LCD(CLS, LINE1, menu0[0]);
-			// LCD(NO_CLS, LINE2, menu0[1]);
-			func(menu0);
+			 LCD(CLS, LINE1, menu0[0]);
+			 LCD(NO_CLS, LINE2, menu0[1]);
+//			func(menu0);
 			break;
 		
 		case 10:
@@ -134,8 +135,6 @@ uint8_t menu_disp(uint8_t menu_item, uint8_t sub_menu_item)
 			LCD(CLS, LINE1, menu51[0]);
 			LCD(NO_CLS, LINE2, menu51[1]);
 			break;
-	
-		// All cases will return 1 to indicate menu exists and successsully switched by menu ID increment
 
 		// Return 0 to indicate menu item does not exist
 		default:
@@ -143,4 +142,10 @@ uint8_t menu_disp(uint8_t menu_item, uint8_t sub_menu_item)
 			Current_Menu = 0;
 			return 0;
 	}
+    // All cases will return 1 to indicate menu exists and successfully switched by menu ID increment
+    return 1;
 }
+
+#define RIGHT PORTCbits.RC1
+#define LEFT PORTCbits.RC0
+

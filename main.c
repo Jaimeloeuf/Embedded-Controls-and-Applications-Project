@@ -6,7 +6,7 @@
 #pragma config LVP = OFF // Single-Supply ICSP Enable bit
 #pragma config WDT = OFF // Watchdog Timer Enable bit
 
-#include "config.h" // Header file contains any configuration bits needed to be set by the debugger
+//#include "config.h" // Header file contains any configuration bits needed to be set by the debugger
 #include <xc.h>
 #include <stdlib.h> // Where is this used??
 #include <stdint.h> // Used to get definition for uint8_t and other standard types. To convert to use primitives ltr.
@@ -15,9 +15,10 @@
 #include "keypad.h" // Keypad reader interface
 #include "adc.h"	// ADC control and reader functions
 #include "timer.h"  // Peripheral timer controller
-#include "7seg.h"   // Dual Seven Segment interface lib
+//#include "7seg.h"   // Dual Seven Segment interface lib
 #include "LCD.h"	// LCD interface lib
-#include "utils.h"  // Utilities functions
+#include "utils.h"
+#include "menu.h"  // Utilities functions
 
 /*	@Doc
 	This is the main file, and it should only contain the:
@@ -71,9 +72,9 @@ void interrupt ISR(void)
 		// Clear the interrupt flag
 		timeFlag = 0;
 	}
-	else if (/* Other interrupt flags... */)
-	{
-	}
+//	else if (/* Other interrupt flags... */)
+//	{
+//	}
 	else
 	{
 		// If the source cannot be determined, set error flag>
@@ -105,35 +106,24 @@ void interrupt_setup()
 
 void main(void)
 {
+    Init_LCD();
+    menu_disp(0, 0);
+    
 	// To use OSSCON register to select the current run mode at startup
 
 	// Call all the setup functions.
-	interrupt_setup();
-	Init_LCD();
-	Keypad_setup();
-
-	// Set the I/O tri-state buffers
-	// @TODO Need to change the ADCON1 for the ADC usage
-	ADCON1 = 0x0F;		// Set ports A,B & E as digital I/O
-	TRISA = 0b11001111; // RA0(Keypad DA)  RA1(Touch Sensor Output)
-	TRISB = 0b11001111; // RB0-RB3 INPUT for Keypad A-D // RB4 & 5 OUTPUT for LCD interface RS & E
-	TRISC = 0;			// PORTC 0-6 used for Output to 7Seg // RC7 used for LIGHTBULB
-	TRISD = 0;			// Entire PORTD used for LCD output
-	TRISE = 0;			// RE0 is used for speaker // RE1 and RE2 used as output for SL1 and SL2 // Must be output to use PORTD as GPIO
-
-	// Read config and password from EEPROM --> needed?
-
-	// Set any initial values
+	// interrupt_setup();
+	// Init_LCD();
+	// Keypad_setup();
 
 	/*	Infinite loop so when it wakes and finishes the ISR and continue on the sleep line, it will loop back
 		to go sleep again. This is done to prevent the program from ending after waking from sleep, similiar
 		to the concept of a never ending event-loop in JavaScript */
+		
+	int x; // Stuff that I want to do before going back to sleep... can be anything. The int x is just a placeholder.
 	while (1)
 	{
-		int x; // Stuff that I want to do before going back to sleep... can be anything. The int x is just a placeholder.
-
-		// Constantly display the temperature on the 7 Segment displays, after a while the device goes to sleep, use a timer overflow for that?
-
+		// Go back to sleep after finnishing the Interrupt Routines.
 		SLEEP(); // xc8 compiler library sleep function
 	}
 	// Idle mode means, CPU clock sleeps and peripheral continue to work. Sleep mode means, all selected oscillators stop.

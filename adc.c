@@ -4,6 +4,7 @@
 */
 
 #include <xc.h>
+#define _XTAL_FREQ 4000000
 
 void ADC_setup(void)
 {
@@ -39,10 +40,12 @@ int adc_ISR(void)
 {
 	// "ISR" that returns the value read from the (ADCRH + ADCRL)
 
-	if (ADCON0bits.CHS0 == 0)
-		TA = ADRESH * 256 + ADRESL; // keep result in TA
-	else
-		TB = ADRESH * 256 + ADRESL;
+	if (ADCON0bits.CHS0 == 0) {
+        int TA = ADRESH * 256 + ADRESL; // keep result in TA
+    }
+	else {
+        int TB = ADRESH * 256 + ADRESL;
+    }
 }
 
 // Test function for ADC

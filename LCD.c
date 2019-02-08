@@ -4,8 +4,8 @@
 
 // Macros, confined only to this file
 #define LCD_DATA PORTD
-#define LCD_RS RE1 // RS signal for LCD
-#define LCD_E RE0  // E signal for LCD
+#define LCD_RS PORTEbits.RE1 // RS signal for LCD
+#define LCD_E PORTEbits.RE0  // E signal for LCD
 
 unsigned char LCD_TEMP;
 
@@ -25,10 +25,9 @@ void LCD(uint8_t cls, uint8_t line, char *msg)
 	
 	for (int i = 0; msg[i]; i++) // Output message to LCD
 		W_data_4bit(msg[i]);	 // Write individual character to LCD
-
 }
 
-void Init_LCD()
+void Init_LCD(void)
 { /* LCD display initialization */
 
 	/* PORT direction registers. */

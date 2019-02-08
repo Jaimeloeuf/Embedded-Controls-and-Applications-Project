@@ -112,15 +112,15 @@ RB 1
 
 RB 2 - 5
 	The four push button used to move around in the menu
-
+	
+RC 0 - 1
+	Push Button S3 and S2
 RC2
 	Hardware PWM
-
-RC
-	The remaining RC/PORTC pins can be used to connect the LEDs to show the current mode and stuff.
-
 RC 4 - 7
 	Keypad
+RC
+	The remaining RC/PORTC pins can be used to connect the LEDs to show the current mode and stuff.
 RD 0 - 7
 	7Seg output pins
 RE 0 - 1

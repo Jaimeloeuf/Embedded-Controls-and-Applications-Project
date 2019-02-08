@@ -17,7 +17,7 @@
 // Array that stores all the keypad digits based on the input truth table
 unsigned char keypad_digit[] = {1, 2, 3, 0xF, 4, 5, 6, 0xE, 7, 8, 9, 0xD, 0, 0xB, 0xC};
 // See if the below array is valid.
-unsigned char keypad_digit[] = {1, 2, 3, 'F', 4, 5, 6, 'E', 7, 8, 9, 'D', 0, 'B', 'C'};
+//unsigned char keypad_digit[] = {1, 2, 3, 'F', 4, 5, 6, 'E', 7, 8, 9, 'D', 0, 'B', 'C'};
 // "Global" variable input that holds the value of the input. Optimization: Create once, used many times.
 unsigned char input;
 

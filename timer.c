@@ -3,7 +3,7 @@
 
 // Regarding Timer
 /*
-A timer is a clock oscillator feeding a counter - a pre-scaler goes between the clock and counter, a post-scaler goes after the counter. There are specific advantages for either.
+A timer is a clock oscillator feeding a counter - a pre-scaler goes between the clock and counter, a post-scaler goes after the counter.
 Prescaler: Generation of the desired frequency.
 Postscaler: Management of the occurrence of the interrupt
 */
@@ -20,16 +20,13 @@ void timer_setup(void)
 }
 
 // Function to actually
-void timer_init(int f(int a, int b), uint16_t time, ...)
-{
-	// Step one is to make the 'time' input usable
-}
-
-void timer_action()
-{
+//void timer_init(int f(int a, int b), uint16_t time)
+//{
+//	// Step one is to make the 'time' input usable
+//}
 	// This function takes in a function pointer.
 	// This function will run when the time is out, by calling the function passed in using the function pointer.
-}
+
 
 /*	@Flow used
 	1. The user will set a time to time out in, can indicate if you want the time to be seconds or milliseconds
@@ -38,31 +35,7 @@ void timer_action()
 	// Basically fucking set timeout all over again.
 */
 
-void interrupt ISR(void)
-{
-	if (INTCONbits.TMR0IF)
-	{
-		TMR0H = 0x3C;
-		TMR0L = 0xB0; // TMR0H:L=0x3CB0 = 15536
-		INTCONbits.TMR0IF = 0;
-	}
-}
-
-
-
-
-
-// Test functions for the Timer.
-void interrupt tmr0(void)
-{
-	if (TMR0IF)
-	{				  // Check for Timer0 overflow
-		RA1 = ~LATA1; // Toggle LED on RA1
-		RA2 = ~LATA2; // Toggle LED on RA2
-		TMR0IF = 0;   // Clear Timer0 interrupt flag
-	}
-}
-void test(void)
+void timer_test(void)
 {
 	char a, i;
 	GIE = 0;

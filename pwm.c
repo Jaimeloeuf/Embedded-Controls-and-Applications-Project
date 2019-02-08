@@ -41,7 +41,7 @@ void motor_setup(int output_percentage)
 	CCPR1L = 0b00001101; // CCPR1L:CCP1CON<5:4> = 52
 
 	// DC1B1 & DC1B0 = 0, Lower nibble is all '1' to use the CCP1 in PWM mode.
-	CCP1CON = 0x 0 F;
+	CCP1CON = 0x0F;
 }
 
 motor_start()
@@ -62,7 +62,7 @@ motor_restart()
 }
 
 // Test function for PWM
-void test()
+void PWM_test()
 {
 	TRISC = 0b11111011;   // Port C as output
 	T2CON = 0b00000101;   // Timer 2 On, postscaler = 1:1, prescaler = 1:4
