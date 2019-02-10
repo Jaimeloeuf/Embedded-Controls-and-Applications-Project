@@ -1,31 +1,30 @@
 # ECAPP-Project
+This is an IoT Project for a sprinkler control system where the Sprinkler will be emulated a motor.
+- The 'strength' or speed of the sprinkler that corresponds to the amount of water sprinkled out will be directly correlated with the speed of the motor.
+- There are 2 predefined speeds for the motor.
+
 
 ## Use case scenarios
-- This is an IoT Project for a sprinkler control system and the Sprinkler will be emulated a motor. The 'strength' or speed of
-the sprinkler that corresponds to the amount of water sprinkled out will be directly correlated with the speed of the motor.
 - To use this system, the user can set a mode for the system, either manual or auto mode. The functionalites of the mode is described below.
-- Upon system startup and inactivity or lock, a password is needed to use the system again.
+
 
 #### Modes
 - Manual mode:
-	User can set the strength of the sprinkler.
-		If the sprinkler is on while the user set the strength, the sprinkler's strength will change on the spot.
-	User can start and stop the sprinkler manually.
-	User can can set a timer, to automatically off the sprinkler on timeout.
+	- User can choose 1 of 2 strength for the sprinkler.
+		- If sprinkler on while setting strength, the sprinkler's strength will change on the spot.
+	- User can start and stop the sprinkler manually using the touch sensor
+	- User can can set a timer, to automatically off the sprinkler on timeout.
 
 - Auto mode:
-	At any point in time, the user can change mode by selecting mode change or by pressing on or off directly to swtich into manual mode.
-	If on or off signals are sent to the system, then the mode will be automatically switched back to manual mode.
-	User can set the strength of the sprinkler.
-		At any time, the user can set a new strength but it will only be applied the next time the sprinkler turns on.
-	On mode startup, a loop with a fixed interval will be started, at every interval, the check below will be performed, thus making the sprinkler start and stop depending on the current temperature.
-		If the temperature exceeds user settable "threshold", then on the sprinkler.
-		else off the sprinkler.
-	At any point in time, the user can set a new interval length. After setting the countdown will restart with the new interval.
-	At any point in time, the user can set a new temperature threshold, this value will only be
+	- At any point in time, mode can be changed by selecting mode change or by pressing the toggle switch directly to swtich toggle the sprinkler and change into manual mode.
+	- User can set the strength of the sprinkler.
+		- At any time, the user can set a new strength and the sprinkler will restart
+	- On mode startup, a loop with a fixed interval will be started, at every interval, the check below will be performed, thus making the sprinkler start and stop depending on the current temperature.
+		- If the temperature exceeds user settable "threshold", then on the sprinkler, else off the sprinkler.
+	- At any point in time, the user can set a new temperature threshold, this value will only be used on the next threshold checking.
+
 
 #### How does the user uses it?
-
 *** Menu
 1.	View current temperature (More precise than the nearest integer version displayed on the 7Seg)
 2.	Toggle operating mode
