@@ -1,74 +1,69 @@
 #include <xc.h>
-#include "keypad.h"
+#include "pwm.h"
 
 /*	@Doc
-	This module contains the PWM control
-	The operation of CCP1 module is controlled by register CCP1CON.
-	For PWM mode, Timer2 is used for generating the switching frequency.
+    This module contains the PWM control
+    The operation of CCP1 module is controlled by register CCP1CON.
+    For PWM mode, Timer2 is used for generating the switching frequency.
+ */
 
-*/
+// Motor state to keep track if motor is on or off. 0 for off and 1 for on.
+char motor_state = 0;
+// Speed variable keeps track of how fast the motor runs. 0 for half speed 1 for full speed
+char speed = 0; // Start with half speed
 
-#define DA PORTAbits.RA1 // This input pin will be used as an eternal interrupt
-
-int power_output;
-
-// Use this function to set output power.
-void set_output_power(char output_percentage)
-{
-	/* Input parameter:
-		output_percentage is a decimal up to 100 */
-
-	// Error condition checks
-	if (output_percentage > 100)
-		output_percentage = 100;
-	else if (output_percentage < 0)
-		output_percentage = 0;
-
-	// Calculate the duty cycle then store in the variable.
-	power_output = output_percentage;
+void motor_setup(void) {
+    // RC2 will be used as output, so set the pin usage type here. All other pins are left untouched by the bitmask
+    TRISC &= 0xFB;
+    // Set the output off first
+    PORTC &= 0xFB;
 }
 
-void motor_setup(int output_percentage)
-{
-	// Call function to set the percentage of power to be output
-	set_output_power(output_percentage);
-
-	// RC2 will be used as output, so set the pin usage type here. All other pins are left untouched by the bitmask
-	TRISC &= 0xFB;
-
-	T2CON = 0b00000101;  // On Timer 2, postscale = 1:1, prescale = 1:4
-	PR2 = 64;			 // Set PR2 = 64 for 52 µs
-	CCPR1L = 0b00001101; // CCPR1L:CCP1CON<5:4> = 52
-
-	// DC1B1 & DC1B0 = 0, Lower nibble is all '1' to use the CCP1 in PWM mode.
-	CCP1CON = 0x0F;
+void motor_speed(char input_speed) {
+    if (input_speed == 1)
+        speed = 1;
+    else
+        speed = 0;
 }
 
-motor_start()
-{
-	// Set all the values for the PWM that was set by the set_out_put function
+/* For some reason the motor's pwm below works in the opposite way? Like halfspeed is faster than full speed
+ Leaving it like this first because at least I have 2 speeds. */
+void motor_start(void) {
+    if (speed) {
+        // If speed == 0 means half speed
+        T2CON = 0b00000101; // On Timer 2, postscale = 1:1, prescale = 1:4
+        PR2 = 62; // Set PR2 = 64 for 250 µs
+        CCPR1L = 0b00000110; // CCPR1L:CCP1CON<5:4> = 75
+        CCP1CON = 0b00111111;
 
-	// Start the PWM process and wait for the stop function to be called.
-}
-motor_stop()
-{
-	// Stop the motor from running.
-}
-motor_restart()
-{
-	// 1 Function to stop and start the motor to use a new power output value.
-	motor_stop();
-	motor_start();
+    } else {
+        // If speed == 1 means full speed
+        T2CON = 0b00000101; // On Timer 2, postscale = 1:1, prescale = 1:4
+        PR2 = 62; // Set PR2 = 64 for 250 µs
+        CCPR1L = 0b00110010; // CCPR1L:CCP1CON<5:4> = 200
+        CCP1CON = 0b00111111;
+    }
+    motor_state = 1;
 }
 
-// Test function for PWM
-void PWM_test()
-{
-	TRISC = 0b11111011;   // Port C as output
-	T2CON = 0b00000101;   // Timer 2 On, postscaler = 1:1, prescaler = 1:4
-	PR2 = 249;			  // Set PR2 = 249 for 1ms
-	CCPR1L = 0b01111101;  // CCPR1L:CCP1CON<5:4> = 500
-	CCP1CON = 0b00001111; // DC1B1 & DC1B0 = 0, PWM mode
-	while (1)
-		;
+void motor_stop(void) {
+    // Stop the motor by turning off the PWM mode
+    CCP1CON = 0;
+    // Set current motor state as off
+    motor_state = 0;
+}
+
+void motor_restart(void) {
+    // 1 Function to stop and start the motor to use a new power output value.
+    motor_stop();
+    motor_start();
+}
+
+void motor_toggle(void) {
+    // Toggle the current state of the 'motor' or PWM output
+    // If motor is on, off it, else on it.
+    if (motor_state)
+        motor_stop();
+    else
+        motor_start();
 }

@@ -108,13 +108,9 @@ RA5
 RB 0
 	DA Interrupt pin
 RB 1
-	On/Off pin with interrupt
-
-RB 2 - 5
-	The four push button used to move around in the menu
-	
-RC 0 - 1
-	Push Button S3 and S2
+	Touch Sensor interrupt
+RB 4 - 5
+	The 2 push button used to move around in the menu as interrupt touch
 RC2
 	Hardware PWM
 RC 4 - 7
