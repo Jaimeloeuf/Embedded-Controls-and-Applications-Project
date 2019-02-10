@@ -39,12 +39,12 @@ then off the 7seg and go to sleep.
 
 - To wake the device from sleep mode:
 	- Touch the touch sensor pad to wake the system up.
-	* Note that the system will go back to sleep after 10 seconds of inactivity.
-	* To tell if the device is sleeping, look at the 7Seg, if it is displaying the current temp, then it is awake, and asleep otherwise.
+	- Note that the system will go back to sleep after 10 seconds of inactivity.
+	- To tell if the device is sleeping, look at the 7Seg, if it is displaying the current temp, then it is awake, and asleep otherwise.
 
 - To directly on or off the sprinkler:
 	- Touch the touch sensor pad to toggle the motor mode/state.
-	* Note that this will only work when the device is awake, meaning after the device wakes up.
+	- Note that this will only work when the device is awake, meaning after the device wakes up.
 
 - To set the temperature threshold for use in automatic mode.
 	- Go to the 3rd option in the menu.
@@ -65,15 +65,11 @@ then off the 7seg and go to sleep.
 #### Technical components for the emulated stuff.
 - Sprinkler strength/speed
 	- controlled by the hardware PWM.
-	- Timer 2 will be used for the timing/interrupting operation.
+	- Timer 2 will be used for the PWM generation
 - Temperature value
-	- Read using the ADC on the Pic Chip from the temperature sensor breakout board
-	- Sensor breakout board consist of a LM35 temperature sensor and a simple 10X amplifier.
-	- Amp is need to make the reading more precise as the resolution of the ADC is not very high.
-	- The ADC's reference voltage will be the positive power supply voltage of 5V and Gnd of 0V, thus resolution or step size is 4.88mV.
-	- The range of expected output voltage from the temperature sensor is from 200mV to 500mV. A 10 times amplification can be used.
-- On/Off control switch
-	- The touch sensor can be used. If Sprinkler on when touched, off it and vice versa.
+	- Read using the on chip ADC
+- Sprinkler's Toggle switch
+	- The touch sensor will be used. Touching it toggle's the current state of the sprinkler
 - A setInterval function
 	- A Timer will used to acheive this.
 	- At every interval a function the user chooses can be ran.
