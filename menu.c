@@ -12,7 +12,7 @@
 // An array of pointers to constant char strings.
 char *menu0[] = {
 	"Menu (5)",
-	"s3:back s2:next"};
+	"s7:back s8:next"};
 
 char *menu10[] = {
 	"View current",
@@ -69,9 +69,6 @@ Press E to exit
 Press D to show a decimal point if allowed (Flash invalid for a second.)
 */
 
-// Global variable to keep track of the current menu and to maintain state between interrupts.
-uint8_t Current_Menu = 0;
-
 void func(char *menu) {
 	LCD(CLS, LINE1, menu[0]);
 	LCD(NO_CLS, LINE2, menu[1]);
@@ -81,7 +78,9 @@ void func(char *menu) {
 uint8_t menu_disp(uint8_t menu_item, uint8_t sub_menu_item)
 {
 	// get the menu ID by combining the input arguments
-	Current_Menu = (menu_item * 10) + sub_menu_item;
+	c_menu = menu_item;
+    c_sub_menu = sub_menu_item;
+    int Current_Menu = (menu_item * 10) + sub_menu_item;
 
 	switch (Current_Menu)
 	{
@@ -138,14 +137,26 @@ uint8_t menu_disp(uint8_t menu_item, uint8_t sub_menu_item)
 
 		// Return 0 to indicate menu item does not exist
 		default:
-			// Reset the menuID stored within the Current_menu variable
-			Current_Menu = 0;
 			return 0;
 	}
     // All cases will return 1 to indicate menu exists and successfully switched by menu ID increment
     return 1;
 }
 
-#define RIGHT PORTCbits.RC1
-#define LEFT PORTCbits.RC0
+void previous(void) {
+    // Decrement the menu page
+    --c_menu;
+    if (c_menu < 0) {
+        c_menu = 5;
+    }
+    menu_disp(c_menu, 0);
+}
 
+void next(void) {
+    // Increment the menu page
+    ++c_menu;
+    if (c_menu > 5) {
+        c_menu = 0;
+    }
+    menu_disp(c_menu, 0);
+}

@@ -1,5 +1,6 @@
 #include <xc.h>
 #include "pwm.h"
+#define _XTAL_FREQ 4000000
 
 /*	@Doc
     This module contains the PWM control
@@ -33,7 +34,7 @@ void motor_start(void) {
         // If speed == 0 means half speed
         T2CON = 0b00000101; // On Timer 2, postscale = 1:1, prescale = 1:4
         PR2 = 62; // Set PR2 = 64 for 250 µs
-        CCPR1L = 0b00000110; // CCPR1L:CCP1CON<5:4> = 75
+        CCPR1L = 0b00010010; // CCPR1L:CCP1CON<5:4> = 75
         CCP1CON = 0b00111111;
 
     } else {
@@ -43,12 +44,17 @@ void motor_start(void) {
         CCPR1L = 0b00110010; // CCPR1L:CCP1CON<5:4> = 200
         CCP1CON = 0b00111111;
     }
+    __delay_ms(100);
     motor_state = 1;
 }
 
 void motor_stop(void) {
     // Stop the motor by turning off the PWM mode
     CCP1CON = 0;
+    // Make sure the output v on the pin is off
+    PORTCbits.RC2 = 0;
+    // Stop the timer from running
+    T2CONbits.TMR2ON = 0;
     // Set current motor state as off
     motor_state = 0;
 }
