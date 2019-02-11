@@ -120,30 +120,12 @@ RE2
 	7Seg SL2
 
 
-#### PINS Unused
+#### PINS left Unused
 RA 5
 RB 2 - 5
 RC 0 - 1, 3
 RD 0 - 7
 RE 2
-
-
-<!-- Example code for ADC -->
-<!-- ADCON0 = 0b00000001;
-ADCON1 = 0b00001110;
-ADCON2 = 0b00010001;
-
-ADCON0bits.GO = 1;
-while (ADCON0bits.DONE);
-result = ADRESH >> 6;
-PORTA = result;
-
-T2CON = 0b00000111;
-PR2 = 78;
-CCPR1L = 0b00100011;
-CCP1CON = 0b00001100;
-
-TMR2ON = 0; -->
 
 
 #### BITWISE OPERATIONS Cheatsheet
