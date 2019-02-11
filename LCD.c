@@ -56,16 +56,16 @@ void W_ctr_4bit(char x)
 	//LCD_TEMP >> 4 // send upper nibble of control word
 	LCD_E = 1; // Logic ?1?
 	LCD_DATA = LCD_TEMP;
-	_delay(1000);   // 1ms delay
+	_delay(300);   // 0.3ms delay
 	LCD_E = 0;		// Logic ?0?
-	_delay(1000);   // 1ms delay
+	_delay(300);   // 0.3ms delay
 	LCD_TEMP = x;   // Store control word
 	LCD_TEMP <<= 4; // Send lower nibble of control word
 	LCD_E = 1;		// Logic ?1?
 	LCD_DATA = LCD_TEMP;
-	_delay(1000); // 1ms delay
+	_delay(300);   // 0.3ms delay
 	LCD_E = 0;	// Logic 0?
-	_delay(1000); // 1ms delay
+	_delay(300);   // 0.3ms delay
 }
 
 void W_data_4bit(char x)
@@ -76,14 +76,14 @@ void W_data_4bit(char x)
 	//LCD_TEMP >>= 4; // Send upper nibble of text data
 	LCD_E = 1; // Logic ?1?
 	LCD_DATA = LCD_TEMP;
-	_delay(1000);   // 1ms delay
+	_delay(300);   // 0.3ms delay
 	LCD_E = 0;		// Logic ?0?
-	_delay(1000);   // 1ms delay
+	_delay(300);   // 0.3ms delay
 	LCD_TEMP = x;   // Store text data
 	LCD_TEMP <<= 4; // Send lower nibble of text data
 	LCD_E = 1;		// Logic ?1?
 	LCD_DATA = LCD_TEMP;
-	_delay(1000); // 1ms delay
+	_delay(300);   // 0.3ms delay
 	LCD_E = 0;	// Logic ?0?
-	_delay(1000); // 1ms delay
+	_delay(300);   // 0.3ms delay
 }

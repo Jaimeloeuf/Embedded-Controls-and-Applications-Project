@@ -62,7 +62,7 @@ then off the 7seg and go to sleep.
 	The keypad will only be used to do stuff in the menu.
 
 
-#### Technical components for the emulated stuff.
+#### Technical components usage
 - Sprinkler strength/speed
 	- controlled by the hardware PWM.
 	- Timer 2 will be used for the PWM generation
@@ -120,7 +120,7 @@ RE2
 	7Seg SL2
 
 
-#### PINS LEFT
+#### PINS Unused
 RA 5
 RB 2 - 5
 RC 0 - 1, 3
@@ -128,42 +128,22 @@ RD 0 - 7
 RE 2
 
 
-<!-- To use the LCD look at below example -->
-void main(void)
-{
-	ADCON1 = 0X0F;
-	
+<!-- Example code for ADC -->
+<!-- ADCON0 = 0b00000001;
+ADCON1 = 0b00001110;
+ADCON2 = 0b00010001;
 
-	const char MESS[] = "ECAPP LAB 3";
+ADCON0bits.GO = 1;
+while (ADCON0bits.DONE);
+result = ADRESH >> 6;
+PORTA = result;
 
-	Init_LCD();					  // Init LCD 4-bit interface, multiple line
+T2CON = 0b00000111;
+PR2 = 78;
+CCPR1L = 0b00100011;
+CCP1CON = 0b00001100;
 
-    char msg1[] = "Chicken";
-    char msg2[] = "No Chicken";
-    
-	LCD(CLS, LINE1, msg1);
-	LCD(NO_CLS, LINE2, msg2);
-
-	while (1)
-		;
-}
-
-
-    ADCON0 = 0b00000001;
-    ADCON1 = 0b00001110;
-    ADCON2 = 0b00010001;
-
-        ADCON0bits.GO = 1;
-        while (ADCON0bits.DONE);
-        result = ADRESH >> 6;
-        PORTA = result;
-
-            T2CON = 0b00000111;
-            PR2 = 78;
-            CCPR1L = 0b00100011;
-            CCP1CON = 0b00001100;
-
-            TMR2ON = 0;
+TMR2ON = 0; -->
 
 
 #### BITWISE OPERATIONS Cheatsheet
