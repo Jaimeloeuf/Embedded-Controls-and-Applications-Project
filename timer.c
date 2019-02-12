@@ -1,61 +1,58 @@
-#include <stdarg.h>
 #include <xc.h>
+#include "timer.h"
+#include "global_state.h"
+#include "adc.h"
+#include "pwm.h"
 
-// Regarding Timer
-/*
-A timer is a clock oscillator feeding a counter - a pre-scaler goes between the clock and counter, a post-scaler goes after the counter.
-Prescaler: Generation of the desired frequency.
-Postscaler: Management of the occurrence of the interrupt
-*/
+/* A timer is a clock oscillator feeding a counter.
+ * The pre-scaler goes between the clock and counter, for the generation of desired frequency.
+ * The post-scaler goes after the counter, to manage the occurrence of the interrupt. */
 
 /* Setup the timer registers in this function */
-void timer_setup(void)
-{
-	// Add in all the values and stuff.
+void timer_setup(void) {
+    GIE = 0; // Disable all interrupts
+    
+    T0CON = 0b00000010; // Make sure Timer0 is off by default, set to 16-bit mode, 1:8 prescaler
+    // Clear the timer flag
+    INTCONbits.TMR0IF = 0;
+    // Set timer0 to be a low priority interrupt
+    INTCON2bits.TMR0IP = 0;
+    // Enable the timer interrupt flag
+    INTCONbits.TMR0IE = 1;
+    
+    // Clear all the Timer0 register
+    TMR0H = 0;
+    TMR0L = 0;
 
-	TMR0H = 0x3C;
-	TMR0L = 0xB0; // TRM0H:L = 0x3CB0
-	T0CON = 0b10000010;
-	INTCON = 0b11100000; //GIEH=1, GIEL=1, TMR0IE = 1, TMR0IF=0
+    // Make sure Timer0 is off and set to 16-bit mode.
+    T0CON = 0b00000010;
+
+    // Enable RD 0 - 1 as output
+    TRISD &= 0xFC;
+    // Make sure they both output 0 at the start
+    PORTD &= 0xFC;
+
+    GIE = 1; // Enable all interrupts
+    GIEL = 1; // Enable all low priority interrupts
 }
 
-// Function to actually
-//void timer_init(int f(int a, int b), uint16_t time)
-//{
-//	// Step one is to make the 'time' input usable
-//}
-	// This function takes in a function pointer.
-	// This function will run when the time is out, by calling the function passed in using the function pointer.
+void timer_start(void) {
+    T0CON = 0b10000010; // On Timer0, set to 16-bit mode,
+    // TMR0ON = 1; // Set on bit directly
+}
 
+void timer_stop(void) {
+    T0CON = 0b00000010; // Off Timer0
+    // TMR0ON = 0; // Set off bit directly
+}
 
-/*	@Flow used
-	1. The user will set a time to time out in, can indicate if you want the time to be seconds or milliseconds
-	2. Pass in the function to be executed when time is up
+void timer_ISR(void) {
+    PORTDbits.RD0 ^= 1;
+    PORTDbits.RD1 ^= 1;
 
-	// Basically fucking set timeout all over again.
-*/
-
-void timer_test(void)
-{
-	char a, i;
-	GIE = 0;
-	ADCON1 = 0X0F;
-	PORTA = 2;
-	PORTC = 0xff;
-	TRISA = 0b11000000;
-	TRISB = 0b11110111;
-	TRISC = 0b00000000;
-	TRISD = 0x0f;
-	TRISE = 0x0c;
-	RCONbits.IPEN = 1;		// Enable priority interrupt
-	INTCON2bits.TMR0IP = 0; // Set Timer0 interrupt to low priority
-	TMR0H = 0;				// Clear Timer0 high byte register
-	TMR0L = 0;				// Clear Timer0 low byte register
-	T0CON = 0b10000010;		// On Timer0, set to 16-bit mode,
-	// Use internal instruction clock,
-	// Rising-edge trigger, set prescaler to 1:8
-	INTCON2 = 0b00000100;
-	INTCON = 0b11100000;
-	while (1)
-		;
+    // Read the values from the adc
+    if (adc_read() > threshold)
+        motor_start();
+    else
+        motor_stop();
 }

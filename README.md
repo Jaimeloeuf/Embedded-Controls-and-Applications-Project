@@ -89,12 +89,12 @@ This is an IoT Project for a sprinkler control system where the Sprinkler will b
 	- Timer 2 will be used for the PWM generation
 - Temperature value
 	- Read using the on chip ADC
+	- Temperature sensor emulated by potentiometer
 - Sprinkler's Toggle switch
 	- The touch sensor will be used. Touching it toggle's the current state of the sprinkler
 - A setInterval function
-	- A Timer will used to acheive this.
-	- At every interval a function the user chooses can be ran.
-		- E.g. A function calling the ADC to read temperature value every 5 minutes.
+	- Timer0 will used to acheive this.
+	- At every interval a check for the temperature against the threshold will be ran
 - System status updates for the user
 	- LCD will be used to constantly display the current state of the system.
 	- 7Seg will be used to called constantly display the current temperature, Rounded to the nearest integer
