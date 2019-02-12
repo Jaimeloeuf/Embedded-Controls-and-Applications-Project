@@ -8,23 +8,18 @@
     For PWM mode, Timer2 is used for generating the switching frequency.
  */
 
-// Motor state to keep track if motor is on or off. 0 for off and 1 for on.
-char motor_state = 0;
-// Speed variable keeps track of how fast the motor runs. 0 for half speed 1 for full speed
-char speed = 0; // Start with half speed
-
 void motor_setup(void) {
     // RC2 will be used as output, so set the pin usage type here. All other pins are left untouched by the bitmask
-    TRISC &= 0xFB;
-    // Set the output off first
-    PORTC &= 0xFB;
+    TRISCbits.RC2 = 0;
+    // Make sure the output is off at first
+    PORTCbits.RC2 = 0;
 }
 
-void motor_speed(char input_speed) {
-    if (input_speed == 1)
-        speed = 1;
-    else
+void toggle_speed(void) {
+    if (speed)
         speed = 0;
+    else
+        speed = 1;
 }
 
 /* For some reason the motor's pwm below works in the opposite way? Like halfspeed is faster than full speed
