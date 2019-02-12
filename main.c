@@ -9,84 +9,82 @@
 #include <xc.h>
 #include <stdlib.h> // Used for itoa function
 #include <stdint.h> // Used to get definition for uint8_t and other standard types. To convert to use primitives ltr.
-
-// My own header files for the libs/modules
+/* My own header files for the lib/modules */
 #include "LCD.h"	// LCD interface lib
-#include "menu.h"
+#include "menu.h"   // Lib that stores all the menus with functions to display them
 #include "Keypad.h"  // Keypad reader interface
-#include "pwm.h"
+#include "pwm.h"    // PWM output controller and motor control functions
 #include "adc.h"	// ADC control and reader functions
-#include "timer.h"  // Peripheral timer controller
+#include "timer.h" // Peripheral timer controller
+#include "global_state.h"  // Module that maintains all the stateful variables
 
 /*	@Doc
-    This is the main file, and it should only contain the:
-    - main function
-    - The interrupt service routines
-    - Interrupt setup code
-    - Power management code
-    All other functionalities should be imported in from other libs.
-
-    Idle mode means, CPU clock sleeps and peripheral continue to work. Sleep mode means, all selected oscillators stop.
+    This is the main file, and it only contains the:
+    - main function as program entry point
+    - The interrupt service routine switcher
+    - Interrupt setup codes
+    - Power management setup code
+    All other functionalities should be imported in from other libs or handled there.
  */
-int count = 0;
-
-// The ISR is just a 'Switch' in charge of calling the "ISR" of the different libs/modules
 
 void interrupt ISR(void) {
-    /*	The ISR in this file will handle the interrupt source checking and clearing of the interrupt flag when done.
+    /*	This ISR is just a 'Switch' in charge of calling the "ISR" of the different libs/modules
+        This ISR handles the interrupt source checking and clearing of interrupt flags when done.
         @Steps
         1. Check for interrupt source by checking all the interrupt flags.
         2. Call the "ISR" functions
-            Clear the interrupt flag.
+        3. Clear the interrupt flag.
      */
-    if (keyFlag) // Check if DA went high
-    {
-        // call the Keypad interrupt function
+    if (keyFlag) {
+        // When DA goes high
+        // Call the Keypad interrupt function
         keypad_ISR();
         // Clear the interrupt flag
         keyFlag = 0;
     } else if (INTCONbits.RBIF) {
-        // If there is a change on PORTB pins RB 4-7
-        // Check which pin it came from
-        __delay_ms(10);
+        // If there is a change on PORTB pins RB 4-7. Check which pin it came from
+        // Add a delay for switch de-bouncing
+        __delay_ms(20);
         // Always display the next or previous highest level menu
         if (PORTBbits.RB4 == 0)
-            previous(); // s7
+            previous(); // s7 pressed, navigate to previous menu
         else if (PORTBbits.RB5 == 0)
-            next(); // s8
-
+            next(); // s8 pressed, navigate to next menu
         // Clear the interrupt flag
         INTCONbits.RBIF = 0;
     } else if (INTCON3bits.INT2IF) {
         // If the Touch Sensor has been touched on INT1
         // Toggle the current state of the motor
-        //        motor_toggle();
-        motor_speed(1);
+        motor_toggle();
+        // Change the operating mode to manual mode if not already manual mode.
+        if (mode) {
+            toggle_mode();
+            // If user on menu2 when mode change caused by toggle state of motor
+            if (c_menu == 2)
+                // Display the menu again after updating the current mode
+                menu_disp(2);
+        }
         // Clear the interrupt flag
         INTCON3bits.INT2IF = 0;
     } else {
-        // If the source cannot be determined, set error flag
-        menu_disp(5, 1);
+        // If the source cannot be determined, display error message on the LCD
+        menu_disp(10);
     }
 }
 
 void interrupt low_priority ISR_low(void) {
+    /*	This ISR is just a 'Switch' in charge of calling the "ISR" of the different libs/modules
+        This ISR handles the interrupt source checking and clearing of interrupt flags when done.
+        @Steps
+        1. Check for interrupt source by checking all the interrupt flags.
+        2. Call the "ISR" functions
+        3. Clear the interrupt flag.
+     
+        Same functionality as the above ISR except that this handles low priority interrupts
+     */
     if (timeFlag) {
-        // Set the pre-load value again
-        TMR0H = 0x3C;
-        TMR0L = 0xB0; // TMR0H:L=0x3CB0 = 15536
-
-        //         The functions and everything else is dealt with in the Timer function.
-        //        timer_ISR();
-
-        if (++count > 5) {
-            // Reset the count variable
-            count = 0;
-            // Read the values from the adc
-            adc_read();
-        }
-        //        adc_read();
-
+        // Call the Timer interrupt function
+        timer_ISR();
         // Clear the interrupt flag
         timeFlag = 0;
     }
@@ -126,8 +124,22 @@ void toggle_switch_setup(void) {
     GIE = 1;
 }
 
+void indicators_setup(void) {
+    /* Setup function for the indicators. RED for Manual mode. Yellow for Auto mode */
+    // Enable RD 0 - 1 as output
+    TRISD &= 0xFC;
+    // Make sure they both output 0 at the start
+    PORTD &= 0xFC;
+    // Since the default mode is man, light up the RED led.
+    man_LED = 1;
+}
+
 void main(void) {
     // To use OSSCON register to select the current run mode at startup
+    // Run the system in PRImary RUN mode
+    OSCCON = 0;
+    // Set IDLEN to enable the device to enter Idle mode when the sleep instruction is executed
+    OSCCONbits.IDLEN = 1;
 
     // Call all the initialization/setup functions.
     interrupt_setup();
@@ -136,20 +148,21 @@ void main(void) {
     Keypad_setup();
     motor_setup();
     ADC_setup();
+    indicators_setup();
+    timer_setup();
 
     // Print out the Main menu at the start of the program
-    menu_disp(0, 0);
+    menu_disp(0);
 
-    // Setup timer the last as it will start running the moment it it set
-//    timer_setup();
-
-
-
-    /*	Infinite loop so when it wakes and finishes the ISR and continue on the sleep line, it will loop
-        back to go sleep again. This is done to prevent the program from ending after waking from sleep.
-        Cannot put sleep causes error*/
-    while (1) {
-                adc_read();
-                __delay_ms(400);
-    }
+    /* Infinite loop so when it wakes and finishes the ISR and continue on the
+     * sleep line, it will loop back to go sleep again. This is done to prevent
+     * the program from ending after waking from sleep.
+     * 
+     * Idle mode means, CPU clock sleeps and peripheral continue to work.
+     * Sleep mode means, all selected oscillators stop.
+     * 
+     * The below sleep command in the infinite loop puts the device into Idle
+     * mode instead of Sleep mode as IDLEN bit is set
+     */
+    while (1) { Sleep(); }
 }

@@ -49,14 +49,8 @@ void disp(char **menu) {
 
 // Use the below function to choose what the menu to display on the LCD.
 uint8_t menu_disp(uint8_t menu_item) {
-    // get the menu ID by combining the input arguments
-    c_menu = menu_item;
-//    c_sub_menu = sub_menu_item;
-//    uint8_t Current_Menu = (menu_item * 10) + sub_menu_item;
-    
-    // Switch to display the menu based on the input value.
-    // Some menu have dynamically generated data.
-    switch (c_menu) {
+    // Switch to display the menu based on the input value, where some are dynamically generated
+    switch (menu_item) {
         case 0:
             disp(menu0);
             break;
@@ -65,16 +59,14 @@ uint8_t menu_disp(uint8_t menu_item) {
             break;
         case 2:
             disp(menu2);
+            // Dynamically generate Menu based on the current operating mode
             if (mode) {
                 char current_mode[] = "current: Auto";
-                //                strcpy(display, current_mode);
                 LCD(NO_CLS, LINE2, current_mode);
             } else {
                 char current_mode[] = "current: Man";
-                //                strcpy(display, current_mode);
                 LCD(NO_CLS, LINE2, current_mode);
             }
-            //            LCD(NO_CLS, LINE2, display);
             break;
         case 3:
             disp(menu3);
@@ -84,16 +76,14 @@ uint8_t menu_disp(uint8_t menu_item) {
             break;
         case 5:
             disp(menu5);
+            // Dynamically generate Menu based on the speed of the motor
             if (speed) {
                 char current_speed[] = "current: Full";
-                //                strcpy(display, current_mode);
                 LCD(NO_CLS, LINE2, current_speed);
             } else {
                 char current_speed[] = "current: Half";
-                //                strcpy(display, current_mode);
                 LCD(NO_CLS, LINE2, current_speed);
             }
-            //            LCD(NO_CLS, LINE2, display);
             break;
         case 10:
             disp(error);
@@ -102,6 +92,8 @@ uint8_t menu_disp(uint8_t menu_item) {
             // Return 0 to indicate menu item does not exist
             return 0;
     }
+    // Store the selected menu item after displaying, to maintain state across interrupts
+    c_menu = menu_item;
     // All cases will return 1 to indicate menu exists and successfully switched by menu ID increment
     return 1;
 }

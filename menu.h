@@ -2,7 +2,7 @@
 #define menu_H
 
 // Global variable to keep track of the current menu to maintain state between interrupts.
-int8_t c_menu = 0;
+uint8_t c_menu = 0;
 
 // Functions to navigate the menu
 void next(void);
