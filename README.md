@@ -24,23 +24,42 @@ This is an IoT Project for a sprinkler control system where the Sprinkler will b
 	- At any point in time, the user can set a new temperature threshold, this value will only be used on the next threshold checking.
 
 
+#### Menu
+- The menu options
+	0.	Main menu, displays the way to navigate the menus
+	1.	View current temperature (More precise than the nearest integer version displayed on the 7Seg)
+	2.	Toggle operating mode
+	3.	View current temperature threshold used in the automatic mode.
+	4.	Set a new temperature threshold, used in the automatic mode.
+	5.	Toggle sprinkler strength (If motor on when speed is changed, new speed will take effect immediately)
+
+- Navigation keys
+	- To navigate the menu, press s7 to go back, press s8 to go next menu item
+	- Press E for "enter". Pressing enter is equiv. to selecting the menu's option.
+	- Press F as a "Finnish" key at anytime to go back to the main menu.
+
+- Menu 1
+	- Press E to view current temp.
+	- After E is pressed to view current temp, E can still be pressed continuously to update the reading.
+	- Press F to go back to the main menu.
+- Menu 2
+	- Press E to toggle current operating mode
+	- E can be continously pressed to continously toggle the operating mode
+	- Press F to go back to the main menu.
+- Menu 3
+	- Press E to view current temperature value threshold that will on the motor in auto mode
+	- Press F to go back to the main menu.
+- Menu 4
+	- Press E to set new temperature threshold
+	- After E, user can enter a new value between 0-255 as the new threshold and press E again to set it.
+	- Press F to go back to the main menu and quit the setting process.
+- Menu 5
+	- Press E to toggle motor output speed between Full speed and half speed
+	- E can be continously pressed to continously toggle the motor speed
+	- Press F to go back to the main menu.
+
+
 #### How does the user uses it?
-*** Menu
-1.	View current temperature (More precise than the nearest integer version displayed on the 7Seg)
-2.	Toggle operating mode
-3.	View current temperature threshold used in the automatic mode.
-4.	Set a new temperature threshold, used in the automatic mode.
-5.	Set sprinkler strength when on (If sprinkler is on when the speed is set, the new speed will take effect immediately)
-
-To navigate the menu, press s3 to go back, press s2 to go next menu item
-Before going to sleep, set the LCD to display,
-	Last recorded temperature: .. 30C
-then off the 7seg and go to sleep.
-
-- To wake the device from sleep mode:
-	- Touch the touch sensor pad to wake the system up.
-	- Note that the system will go back to sleep after 10 seconds of inactivity.
-	- To tell if the device is sleeping, look at the 7Seg, if it is displaying the current temp, then it is awake, and asleep otherwise.
 
 - To directly on or off the sprinkler:
 	- Touch the touch sensor pad to toggle the motor mode/state.
@@ -61,6 +80,8 @@ then off the 7seg and go to sleep.
 
 	The keypad will only be used to do stuff in the menu.
 
+- To wake the device from sleep mode:
+	- Any actions will cause
 
 #### Technical components usage
 - Sprinkler strength/speed

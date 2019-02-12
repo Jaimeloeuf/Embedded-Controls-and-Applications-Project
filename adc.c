@@ -5,7 +5,6 @@
 
 #include <xc.h>
 #include <stdint.h>
-#include "pwm.h"
 #define _XTAL_FREQ 4000000
 
 void ADC_setup(void) {
