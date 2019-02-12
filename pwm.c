@@ -25,6 +25,8 @@ void toggle_speed(void) {
 /* For some reason the motor's pwm below works in the opposite way? Like halfspeed is faster than full speed
  Leaving it like this first because at least I have 2 speeds. */
 void motor_start(void) {
+    if (motor_state)
+        return; // If motor is already on, do nothing
     if (speed) {
         // If speed == 0 means half speed
         T2CON = 0b00000101; // On Timer 2, postscale = 1:1, prescale = 1:4
@@ -44,6 +46,8 @@ void motor_start(void) {
 }
 
 void motor_stop(void) {
+    if (!motor_state)
+        return; // If motor is already off, do nothing
     // Stop the motor by turning off the PWM mode
     CCP1CON = 0;
     // Make sure the output v on the pin is off
@@ -55,7 +59,7 @@ void motor_stop(void) {
 }
 
 void motor_restart(void) {
-    // 1 Function to stop and start the motor to use a new power output value.
+    // Function to stop and start the motor to use a new power output value.
     motor_stop();
     motor_start();
 }
