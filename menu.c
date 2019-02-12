@@ -1,144 +1,107 @@
 /*	@Doc
-	This module contains the:
-	- The 2D array that holds all the menu's static contents.
-	- Function used to display menu items
-*/
+    This module contains the:
+    - The 2D array that holds all the menu's static contents.
+    - Function used to display menu items
+ */
 
 #include <stdint.h>
 #include <xc.h>
+#include "global_state.h"
 #include "LCD.h"
 #include "menu.h"
+#include "pwm.h"
 
 // An array of pointers to constant char strings.
 char *menu0[] = {
-	"Menu (5)",
-	"s7:back s8:next"};
-
-char *menu10[] = {
-	"View current",
-	"temperature"};
-
-char *menu20[] = {
-    "Toggle operating",
-	"mode"};
-
-char *menu21[] = {
-	"Current Mode:",
-	""}; // Second line to display the current mode as either man or auto, after the mode toggle
-
-char *menu30[] = {
-	"View current",
-	"temp. threshold"
+    "Menu (5)",
+    "s7:back s8:next"
+};
+char *menu1[] = {
+    "View current",
+    "temperature"
+};
+char *menu2[] = {
+    "Toggle mode",
+    ""
+};
+char *menu3[] = {
+    "View current",
+    "temp. threshold"
+};
+char *menu4[] = {
+    "Set new temp.",
+    "threshold"
+};
+char *menu5[] = {
+    "Toggle speed",
+    ""
+};
+char *error[] = {
+    "ERROR!",
+    "" // Empty second line.
 };
 
-char *menu31[] = {
-	"Current temp.",
-	""}; // Second line to display the reading that was taken immediately after calling menu30
-
-char *menu40[] = {
-	"Set new temp.",
-	"threshold"
-};
-
-char *menu41[] = {
-	"Enter new temp.",
-	"" // Second line is to display the user input.
-};
-
-char *menu50[] = {
-	"Set sprinkler",
-	"strength"
-};
-
-char *menu51[] = {
-	"Percent of Max:",
-	"" // Second line is to display the user input.
-};
-
-
-/*
-Every single menu should have a corresponding function to deal with it.
-
-As the user types in their input, the items on the menu will disappear
-LCD will then start displaying the input on the screen
-
-How should the user exit that particular menu?
-2 buttons to switch between menu items
-Press a button to enter
-Press E to exit
-Press D to show a decimal point if allowed (Flash invalid for a second.)
-*/
-
-void func(char *menu) {
-	LCD(CLS, LINE1, menu[0]);
-	LCD(NO_CLS, LINE2, menu[1]);
+// Function to display out the menus
+void disp(char **menu) {
+    LCD(CLS, LINE1, menu[0]);
+    LCD(NO_CLS, LINE2, menu[1]);
 }
 
 // Use the below function to choose what the menu to display on the LCD.
-uint8_t menu_disp(uint8_t menu_item, uint8_t sub_menu_item)
-{
-	// get the menu ID by combining the input arguments
-	c_menu = menu_item;
-    c_sub_menu = sub_menu_item;
-    int Current_Menu = (menu_item * 10) + sub_menu_item;
-
-	switch (Current_Menu)
-	{
-		case 0:
-			 LCD(CLS, LINE1, menu0[0]);
-			 LCD(NO_CLS, LINE2, menu0[1]);
-//			func(menu0);
-			break;
-		
-		case 10:
-			LCD(CLS, LINE1, menu10[0]);
-			LCD(NO_CLS, LINE2, menu10[1]);
-			break;
-		
-		case 20:
-			LCD(CLS, LINE1, menu20[0]);
-			LCD(NO_CLS, LINE2, menu20[1]);
-			break;
-		
-		case 21:
-			LCD(CLS, LINE1, menu21[0]);
-			LCD(NO_CLS, LINE2, menu21[1]);
-			break;
-		
-		case 30:
-			LCD(CLS, LINE1, menu30[0]);
-			LCD(NO_CLS, LINE2, menu30[1]);
-			break;
-		
-		case 31:
-			LCD(CLS, LINE1, menu31[0]);
-			LCD(NO_CLS, LINE2, menu31[1]);
-			break;
-
-		case 40:
-			LCD(CLS, LINE1, menu40[0]);
-			LCD(NO_CLS, LINE2, menu40[1]);
-			break;
-		
-		case 41:
-			LCD(CLS, LINE1, menu41[0]);
-			LCD(NO_CLS, LINE2, menu41[1]);
-			break;
-		
-		case 50:
-			LCD(CLS, LINE1, menu50[0]);
-			LCD(NO_CLS, LINE2, menu50[1]);
-			break;
-		
-		case 51:
-			LCD(CLS, LINE1, menu51[0]);
-			LCD(NO_CLS, LINE2, menu51[1]);
-			break;
-
-		// Return 0 to indicate menu item does not exist
-		default:
-			return 0;
-	}
+uint8_t menu_disp(uint8_t menu_item) {
+    // get the menu ID by combining the input arguments
+    c_menu = menu_item;
+//    c_sub_menu = sub_menu_item;
+//    uint8_t Current_Menu = (menu_item * 10) + sub_menu_item;
+    
+    // Switch to display the menu based on the input value.
+    // Some menu have dynamically generated data.
+    switch (c_menu) {
+        case 0:
+            disp(menu0);
+            break;
+        case 1:
+            disp(menu1);
+            break;
+        case 2:
+            disp(menu2);
+            if (mode) {
+                char current_mode[] = "current: Auto";
+                //                strcpy(display, current_mode);
+                LCD(NO_CLS, LINE2, current_mode);
+            } else {
+                char current_mode[] = "current: Man";
+                //                strcpy(display, current_mode);
+                LCD(NO_CLS, LINE2, current_mode);
+            }
+            //            LCD(NO_CLS, LINE2, display);
+            break;
+        case 3:
+            disp(menu3);
+            break;
+        case 4:
+            disp(menu4);
+            break;
+        case 5:
+            disp(menu5);
+            if (speed) {
+                char current_speed[] = "current: Full";
+                //                strcpy(display, current_mode);
+                LCD(NO_CLS, LINE2, current_speed);
+            } else {
+                char current_speed[] = "current: Half";
+                //                strcpy(display, current_mode);
+                LCD(NO_CLS, LINE2, current_speed);
+            }
+            //            LCD(NO_CLS, LINE2, display);
+            break;
+        case 10:
+            disp(error);
+            break;
+        default:
+            // Return 0 to indicate menu item does not exist
+            return 0;
+    }
     // All cases will return 1 to indicate menu exists and successfully switched by menu ID increment
     return 1;
 }
@@ -149,7 +112,7 @@ void previous(void) {
     if (c_menu < 0) {
         c_menu = 5;
     }
-    menu_disp(c_menu, 0);
+    menu_disp(c_menu);
 }
 
 void next(void) {
@@ -158,5 +121,5 @@ void next(void) {
     if (c_menu > 5) {
         c_menu = 0;
     }
-    menu_disp(c_menu, 0);
+    menu_disp(c_menu);
 }
