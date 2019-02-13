@@ -13,7 +13,7 @@ void ADC_setup(void) {
     // Set analog input channel.
     ADCON0 = 0b00000001; // select analog channel 0 (AN0), ADC on
     ADCON1 = 0b00001110; // AN0 and AN1 only, internal voltage referencing
-    ADCON2 = 0b00000100; // Result Right justified, manual acquisition time, Fosc/4
+    ADCON2 = 0b00000100; // Result Left justified, manual acquisition time, Fosc/4
 }
 
 uint8_t adc_read(void) {

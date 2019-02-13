@@ -38,7 +38,7 @@ char *menu5[] = {
 };
 char *error[] = {
     "ERROR!",
-    "" // Empty second line.
+    "" // Empty second line, for custom error message descriptions
 };
 
 // Function to display out the menus

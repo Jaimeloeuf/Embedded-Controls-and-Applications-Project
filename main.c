@@ -8,7 +8,7 @@
 
 #include <xc.h>
 #include <stdlib.h> // Used for itoa function
-#include <stdint.h> // Used to get definition for uint8_t and other standard types. To convert to use primitives ltr.
+#include <stdint.h> // Used to get uint8_t and other standard type definitions
 /* My own header files for the lib/modules */
 #include "LCD.h"	// LCD interface lib
 #include "menu.h"   // Lib that stores all the menus with functions to display them
@@ -90,6 +90,7 @@ void interrupt low_priority ISR_low(void) {
     }
 }
 
+// General "main" interrupt setup function
 void interrupt_setup() {
     // Disable all Interrupts
     GIE = 0;
@@ -107,8 +108,9 @@ void interrupt_setup() {
     GIE = 1;
 }
 
+// Setup function for the motor toggle switch using the Touch Sensor
 void toggle_switch_setup(void) {
-    /* INT1 for the touch sensor */
+    /* Use INT2 for the touch sensor */
     TRISB = 0xFF;
     // Disable all Interrupts
     GIE = 0;
@@ -124,16 +126,18 @@ void toggle_switch_setup(void) {
     GIE = 1;
 }
 
+// Function to setup the LED indicator lights
 void indicators_setup(void) {
-    /* Setup function for the indicators. RED for Manual mode. Yellow for Auto mode */
     // Enable RD 0 - 1 as output
     TRISD &= 0xFC;
     // Make sure they both output 0 at the start
     PORTD &= 0xFC;
+    /* RED for Manual mode. Yellow for Auto mode */
     // Since the default mode is man, light up the RED led.
     man_LED = 1;
 }
 
+// Main function (Main entry point for the program)
 void main(void) {
     // To use OSSCON register to select the current run mode at startup
     // Run the system in PRImary RUN mode
@@ -142,7 +146,7 @@ void main(void) {
     OSCCONbits.IDLEN = 1;
 
     // Call all the initialization/setup functions.
-    interrupt_setup();
+    interrupt_setup(); 
     toggle_switch_setup();
     Init_LCD();
     Keypad_setup();

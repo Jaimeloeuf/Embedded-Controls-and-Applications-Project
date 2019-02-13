@@ -30,16 +30,19 @@ void timer_setup(void) {
     GIEL = 1; // Enable all low priority interrupts
 }
 
+// Function to start Timer0
 void timer_start(void) {
     TMR0ON = 1; // Set on bit directly
 }
 
+// Function to start Timer0
 void timer_stop(void) {
     TMR0ON = 0; // Set off bit directly
 }
 
+// Function that acts as the interrupt routine for the Timer0 overflow interrupt
 void timer_ISR(void) {
-    // Read the values from the adc and start/stop motor during every timer interrupt
+    // Read the values from the adc and start/stop motor every timer interrupt
     if (adc_read() > threshold)
         motor_start();
     else
