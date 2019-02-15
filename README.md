@@ -87,7 +87,7 @@ This is an Embedded Systems and Controls Project for a sprinkler control system 
 	- Timer 2 will be used for the PWM generation
 - Temperature value
 	- Read using the on chip ADC
-	- Temperature sensor emulated by potentiometer
+	- Temperature sensor emulated by potentiometer/trimmer
 - Sprinkler's Toggle switch
 	- The touch sensor will be used. Touching it toggle's the current state of the sprinkler
 - A setInterval function
@@ -100,11 +100,9 @@ This is an Embedded Systems and Controls Project for a sprinkler control system 
 	- Use keypad if the user wants to control certain stuff.
 
 
-### Pin definitions:
+### Pin definitions / usage:
 RA0 / AN0
-	ADC
-RA 1 - 4
-	LCD data
+	ADC connected to the trimmer
 RA5
 	7Seg SL1
 RB 0
@@ -117,16 +115,10 @@ RC2
 	Hardware PWM to the motor
 RC 4 - 7
 	Keypad's encoder output A to D
+RD 4 - 7
+	LCD data
 RE 0 - 1
 	LCD Control pins
-
-
-#### PINS left Unused
-RA 5
-RB 2 - 5
-RC 0 - 1, 3
-RD 0 - 7
-RE 2 - 3
 
 
 #### BITWISE OPERATIONS Cheatsheet
